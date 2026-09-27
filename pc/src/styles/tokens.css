@@ -1,0 +1,155 @@
+/* ============================================================
+   校园墙 PC 设计令牌（Design Tokens）
+   设计语言：克制、现代、留白充足的校园社区（impeccable + taste-skill）
+   - 单一强调色（青绿 teal），暖调中性纸面，避免蓝紫 AI 渐变
+   - 阴影带统一暖青色调、有偏移与柔化半径；描边与阴影二选一
+   - 4px 间距阶；卡片圆角 12–16；小控件用 pill
+   ============================================================ */
+
+:root {
+  /* ---------- 品牌强调色（唯一主色，teal） ---------- */
+  --brand-50:  #ecf8f5;
+  --brand-100: #d2f0e9;
+  --brand-200: #a6e1d5;
+  --brand-300: #6fcabb;
+  --brand-400: #3aaf9d;
+  --brand-500: #1f9685;
+  --brand-600: #14806f;   /* 链接、选中态 */
+  --brand-700: #106a5d;   /* 实心主按钮（白底白字达 AA） */
+  --brand-800: #0f554c;
+  --brand-900: #0d463f;
+  /* 实心主按钮表面（随主题切换，保证文字对比） */
+  --brand-btn-bg: #106a5d;
+  --brand-btn-fg: #ffffff;
+  --brand-btn-hover: #0f554c;
+
+  /* ---------- 语义色 ---------- */
+  --success: #2f9e6e;
+  --success-bg: #e8f6ef;
+  --warning: #bd7b1f;
+  --warning-bg: #faf2e0;
+  --danger: #cf5046;
+  --danger-strong: #bb3f37;
+  --danger-bg: #fbeae8;
+  --info: #3f7fd4;
+  --info-bg: #e9f1fc;
+
+  /* ---------- 中性色（暖青灰，单一灰族） ---------- */
+  --canvas: #f4f7f5;        /* 页面底色：暖纸面 */
+  --canvas-grain: #eef2f0;
+  --surface: #ffffff;       /* 卡片/面板 */
+  --surface-2: #f7faf8;     /* 次级面板、输入框 */
+  --surface-3: #eef3f0;     /* 悬浮/按下浅底 */
+  --ink: #13201d;           /* 标题、强文本 */
+  --ink-2: #2e3d39;         /* 正文 */
+  --ink-3: #586762;         /* 次要文本 */
+  --ink-4: #84918b;         /* 辅助/占位 */
+  --line: #e3e9e5;          /* 分隔线、描边 */
+  --line-strong: #d2dad5;
+
+  /* ---------- 等级体系配色（数据色，来自后端 Galaxy 等级表） ---------- */
+  --lv1:#94a3b8; --lv2:#38bdf8; --lv3:#22d3ee; --lv4:#34d399; --lv5:#fbbf24;
+  --lv6:#a78bfa; --lv7:#818cf8; --lv8:#e879f9; --lv9:#fb7185; --lv10:#f59e0b;
+
+  /* ---------- 字体 ---------- */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "HarmonyOS Sans SC", "Source Han Sans SC", "Noto Sans SC",
+    "Microsoft YaHei", system-ui, sans-serif;
+  --font-serif: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", Georgia, serif;
+  --font-display: "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* ---------- 辅助色（暖橙，仅用于标签/热门/强调点缀） ---------- */
+  --accent: #e07b39;
+  --accent-soft: #fdf0e6;
+  --accent-strong: #c4621f;
+
+  /* 字号阶 */
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-15: 0.9375rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-20: 1.25rem;
+  --fs-22: 1.375rem;
+  --fs-24: 1.5rem;
+  --fs-28: 1.75rem;
+  --fs-34: 2.125rem;
+
+  /* 间距阶（4 基准） */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;  --sp-5: 20px;
+  --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
+
+  /* 圆角 */
+  --r-xs: 6px; --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-xl: 22px; --r-pill: 999px;
+
+  /* 阴影：统一暖青调光源，有偏移与柔化，不使用硬偏移投影 */
+  --shadow-xs: 0 1px 2px rgba(15, 60, 54, 0.05);
+  --shadow-sm: 0 1px 2px rgba(15, 60, 54, 0.05), 0 4px 12px -8px rgba(15, 60, 54, 0.12);
+  --shadow-md: 0 2px 6px rgba(15, 60, 54, 0.06), 0 14px 34px -16px rgba(15, 60, 54, 0.22);
+  --shadow-lg: 0 4px 12px rgba(15, 60, 54, 0.08), 0 28px 60px -20px rgba(15, 60, 54, 0.30);
+  --shadow-pop: 0 8px 28px -8px rgba(15, 60, 54, 0.28);
+
+  /* 动效：自然减速，入场不弹跳 */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 140ms;
+  --t-base: 220ms;
+  --t-slow: 360ms;
+
+  /* z 阶 */
+  --z-nav: 100;
+  --z-sticky: 200;
+  --z-dropdown: 800;
+  --z-modal: 1000;
+  --z-toast: 2000;
+
+  --container: 1180px;
+  --nav-h: 60px;
+}
+
+/* ---------- 深色模式（data-mode="dark"）：独立编排，非简单反色 ---------- */
+[data-mode="dark"] {
+  --brand-50: #0c2621;
+  --brand-100: #10342d;
+  --brand-200: #13473d;
+  --brand-300: #176052;
+  --brand-400: #228975;
+  --brand-500: #2fa48f;
+  --brand-600: #43b8a2;
+  --brand-700: #5ccbb6;   /* 深底上提亮，保证对比 */
+  --brand-800: #86d8c8;
+  --brand-900: #b3e7dc;
+  /* 深色主题实心按钮：中明度 teal + 深色文字，保证对比 */
+  --brand-btn-bg: #2fa48f;
+  --brand-btn-fg: #041511;
+  --brand-btn-hover: #43b8a2;
+
+  --success: #46b984; --success-bg: #11301f;
+  --warning: #d39a44; --warning-bg: #2e2410;
+  --danger: #e26a60;  --danger-strong: #ec8077; --danger-bg: #341715;
+  --info: #6ea0e6;    --info-bg: #12243c;
+
+  --canvas: #0c1110;
+  --canvas-grain: #0e1514;
+  --surface: #131a18;
+  --surface-2: #18201e;
+  --surface-3: #1f2926;
+  --ink: #eef4f1;
+  --ink-2: #cdd8d3;
+  --ink-3: #97a59f;
+  --ink-4: #6f7c77;
+  --line: #24302c;
+  --line-strong: #33403b;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4), 0 6px 16px -10px rgba(0,0,0,.6);
+  --shadow-md: 0 2px 8px rgba(0,0,0,.45), 0 18px 40px -18px rgba(0,0,0,.7);
+  --shadow-lg: 0 6px 18px rgba(0,0,0,.5), 0 32px 70px -24px rgba(0,0,0,.8);
+  --shadow-pop: 0 10px 34px -10px rgba(0,0,0,.75);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root { --shadow-md: 0 2px 10px rgba(15,60,54,.12); }
+}

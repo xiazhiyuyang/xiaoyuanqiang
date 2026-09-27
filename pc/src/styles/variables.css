@@ -1,0 +1,177 @@
+/* ============================================================
+   统一设计变量体系（variables.css）
+   ------------------------------------------------------------
+   - 与手机端 App.vue 的设计语言对齐：同一组品牌色、同一套明暗语义
+   - 双轴主题模型：
+       · data-theme = 配色主题（galaxy / ocean / forest / sunset / rose / midnight）
+       · data-mode  = 明暗模式（light / dark）
+   - 本文件只做两件事：
+       1) 暴露任务要求的语义化变量名（颜色/字体/间距/圆角/阴影）
+       2) 注册 6 套配色主题对品牌色板的覆盖，并补齐手机端别名
+   - 基础中性色、字体族、动效等结构令牌仍在 tokens.css；此处只做叠加，
+     不重命名、不删除既有变量，保证所有组件无感切换。
+   ============================================================ */
+
+:root {
+  /* ---------- 语义色（任务命名，映射到 tokens.css 的物理令牌） ---------- */
+  --color-primary:        var(--brand-600);
+  --color-primary-hover:   var(--brand-700);
+  --color-on-primary:     var(--brand-btn-fg);
+  --color-secondary:      var(--accent);
+  --color-secondary-strong: var(--accent-strong);
+  --color-success:        var(--success);
+  --color-warning:        var(--warning);
+  --color-danger:         var(--danger);
+  --color-danger-strong: var(--danger-strong);
+  --color-info:           var(--info);
+
+  /* 文本色：primary / secondary / tertiary */
+  --text-primary:    var(--ink);
+  --text-secondary:   var(--ink-2);
+  --text-tertiary:   var(--ink-3);
+  --text-faint:      var(--ink-4);
+
+  /* 背景色：page / card / hover */
+  --bg-page:   var(--canvas);
+  --bg-card:   var(--surface);
+  --bg-raised: var(--surface-2);
+  --bg-hover:  var(--surface-3);
+
+  /* 边框色 */
+  --border-color:       var(--line);
+  --border-strong:      var(--line-strong);
+
+  /* ---------- 字号（xs/sm/base/lg/xl/2xl） ---------- */
+  --fs-xs:   var(--fs-12);  /* 12px  */
+  --fs-sm:   var(--fs-13);  /* 13px  */
+  --fs-base: var(--fs-15);  /* 15px  */
+  --fs-lg:   var(--fs-18);  /* 18px  */
+  --fs-xl:   var(--fs-20);  /* 20px  */
+  --fs-2xl:  var(--fs-24);  /* 24px  */
+  --lh-tight: 1.3;
+  --lh-base:  1.65;
+  --lh-loose: 1.8;
+  --weight-regular: 400;
+  --weight-medium:  540;
+  --weight-semibold:650;
+  --weight-bold:    700;
+
+  /* ---------- 间距（4/8/12/16/20/24/32px） ---------- */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 20px; --space-6: 24px; --space-8: 32px;
+
+  /* ---------- 圆角（sm4 / md8 / lg12 / xl16 / full） ---------- */
+  --radius-sm: 4px;  --radius-md: 8px;  --radius-lg: 12px;
+  --radius-xl: 16px; --radius-full: 999px;
+
+  /* ---------- 阴影（sm/md/lg 已在 tokens.css 定义，此处仅做语义补充） ---------- */
+  --shadow-1: var(--shadow-sm);
+  --shadow-2: var(--shadow-md);
+  --shadow-3: var(--shadow-lg);
+
+  /* ---------- 手机端别名（与 mobile/App.vue 对齐，供 Tools/Notifications 等页面使用） ---------- */
+  --brand:        var(--brand-600);
+  --brand-strong: var(--brand-700);
+  --brand-deep:   var(--brand-800);
+  --brand2:       var(--brand-400);
+  --soft:         color-mix(in srgb, var(--brand-500) 14%, transparent);
+  --brand-soft:   color-mix(in srgb, var(--brand-500) 14%, transparent);
+  --bg:           var(--canvas);
+  --bg-elevated:  var(--surface);
+  --card:         var(--surface);
+  --card-hover:   var(--surface-3);
+  --card-solid:   var(--surface);
+  --text:         var(--ink);
+  --text2:        var(--ink-2);
+  --text3:        var(--ink-3);
+  /* --line / --line-strong 已在 tokens.css 定义，直接复用，不再别名 */
+  --grad:         linear-gradient(135deg, var(--brand-500), var(--brand-700));
+  --grad-subtle:  linear-gradient(135deg,
+                    color-mix(in srgb, var(--brand-500) 16%, transparent),
+                    color-mix(in srgb, var(--brand-400) 8%, transparent));
+  --glow:         0 0 24px color-mix(in srgb, var(--brand-500) 35%, transparent);
+  --shadow-brand: 0 10px 30px -10px color-mix(in srgb, var(--brand-500) 55%, transparent);
+}
+
+/* ============================================================
+   6 套配色主题（data-theme）
+   默认 galaxy 即 tokens.css 中的青 teal，无需在此重复定义。
+   每套主题在「浅色模式」覆盖品牌色板与实心按钮色。
+   ============================================================ */
+
+/* 海洋 Ocean：晴空蓝 */
+[data-theme="ocean"] {
+  --brand-50:#eff8ff; --brand-100:#dbeffe; --brand-200:#bfe2fe;
+  --brand-300:#93cffd; --brand-400:#5fb5fa; --brand-500:#38bdf8;
+  --brand-600:#1f9fe0; --brand-700:#0f7fb8; --brand-800:#116694; --brand-900:#16567a;
+  --brand-btn-bg:#0f7fb8; --brand-btn-fg:#ffffff; --brand-btn-hover:#116694;
+}
+
+/* 森林 Forest：翠绿 */
+[data-theme="forest"] {
+  --brand-50:#ecfdf5; --brand-100:#d1fae5; --brand-200:#a7f3d0;
+  --brand-300:#6ee7b7; --brand-400:#34d399; --brand-500:#10b981;
+  --brand-600:#059669; --brand-700:#047857; --brand-800:#065f46; --brand-900:#064e3b;
+  --brand-btn-bg:#047857; --brand-btn-fg:#ffffff; --brand-btn-hover:#065f46;
+}
+
+/* 日落 Sunset：暖橙 */
+[data-theme="sunset"] {
+  --brand-50:#fff7ed; --brand-100:#ffedd5; --brand-200:#fed7aa;
+  --brand-300:#fdba74; --brand-400:#fb923c; --brand-500:#f97316;
+  --brand-600:#ea580c; --brand-700:#c2410c; --brand-800:#9a3412; --brand-900:#7c2d12;
+  --brand-btn-bg:#c2410c; --brand-btn-fg:#ffffff; --brand-btn-hover:#9a3412;
+}
+
+/* 蔷薇 Rose：樱粉 */
+[data-theme="rose"] {
+  --brand-50:#fff1f7; --brand-100:#ffe4ef; --brand-200:#fecdd6;
+  --brand-300:#fda4c4; --brand-400:#f472b6; --brand-500:#ec4899;
+  --brand-600:#db2777; --brand-700:#be185d; --brand-800:#9d174d; --brand-900:#831843;
+  --brand-btn-bg:#be185d; --brand-btn-fg:#ffffff; --brand-btn-hover:#9d174d;
+}
+
+/* 午夜 Midnight：靛蓝 */
+[data-theme="midnight"] {
+  --brand-50:#eef2ff; --brand-100:#e0e7ff; --brand-200:#c7d2fe;
+  --brand-300:#a5b4fc; --brand-400:#818cf8; --brand-500:#6366f1;
+  --brand-600:#4f46e5; --brand-700:#4338ca; --brand-800:#3730a3; --brand-900:#312e81;
+  --brand-btn-bg:#4338ca; --brand-btn-fg:#ffffff; --brand-btn-hover:#3730a3;
+}
+
+/* ============================================================
+   深色模式（data-mode="dark"）下的各配色品牌色板。
+   中性表面色由 tokens.css 的 [data-mode="dark"] 统一负责，
+   这里只在深色基面上重新提亮品牌色，保证对比度。
+   galaxy 深色板已在 tokens.css 定义，此处补其余 5 套。
+   ============================================================ */
+[data-mode="dark"][data-theme="ocean"] {
+  --brand-50:#0a2436; --brand-100:#0d3149; --brand-200:#114360;
+  --brand-300:#176184; --brand-400:#2a8cbd; --brand-500:#38bdf8;
+  --brand-600:#5ccbfb; --brand-700:#7dd8ff; --brand-800:#a5e4ff; --brand-900:#cdf1ff;
+  --brand-btn-bg:#38bdf8; --brand-btn-fg:#04141f; --brand-btn-hover:#5ccbfb;
+}
+[data-mode="dark"][data-theme="forest"] {
+  --brand-50:#07231a; --brand-100:#0a3023; --brand-200:#0e4230;
+  --brand-300:#156045; --brand-400:#1f986b; --brand-500:#34d399;
+  --brand-600:#5ce0ae; --brand-700:#82ecc4; --brand-800:#adf5db; --brand-900:#d2fbea;
+  --brand-btn-bg:#34d399; --brand-btn-fg:#04140e; --brand-btn-hover:#5ce0ae;
+}
+[data-mode="dark"][data-theme="sunset"] {
+  --brand-50:#26150a; --brand-100:#341d0d; --brand-200:#472811;
+  --brand-300:#653a18; --brand-400:#a85e26; --brand-500:#fb923c;
+  --brand-600:#fcae6e; --brand-700:#fdbc8a; --brand-800:#fdd0ab; --brand-900:#ffe5d2;
+  --brand-btn-bg:#fb923c; --brand-btn-fg:#1a0e04; --brand-btn-hover:#fcae6e;
+}
+[data-mode="dark"][data-theme="rose"] {
+  --brand-50:#290d1c; --brand-100:#381226; --brand-200:#4c1935;
+  --brand-300:#6b234a; --brand-400:#a8356f; --brand-500:#f472b6;
+  --brand-600:#f794c7; --brand-700:#f9b0d6; --brand-800:#fbc9e4; --brand-900:#fde2f1;
+  --brand-btn-bg:#f472b6; --brand-btn-fg:#1a0410; --brand-btn-hover:#f794c7;
+}
+[data-mode="dark"][data-theme="midnight"] {
+  --brand-50:#141633; --brand-100:#1b1d46; --brand-200:#252860;
+  --brand-300:#343987; --brand-400:#5a63d6; --brand-500:#818cf8;
+  --brand-600:#9aa4fa; --brand-700:#b3bbfc; --brand-800:#cdd2fd; --brand-900:#e6e9fe;
+  --brand-btn-bg:#818cf8; --brand-btn-fg:#0a0a1f; --brand-btn-hover:#9aa4fa;
+}

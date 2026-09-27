@@ -1,0 +1,62 @@
+{
+  "name": "校园墙",
+  "appid": "__UNI__96ED157",
+  "description": "校园匿名社区",
+  "versionName": "1.2.0",
+  "versionCode": 120,
+  "transformPx": false,
+  "app-plus": {
+    "usingComponents": true,
+    "splashscreen": {
+      "alwaysShowBeforeRender": true,
+      "waiting": true,
+      "autoclose": true,
+      "delay": 0
+    },
+    "modules": {},
+    "distribute": {
+      "android": {
+        "permissions": [
+          "<uses-permission android:name=\"android.permission.INTERNET\"/>",
+          "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>",
+          "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\"/>",
+          "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
+          "<uses-permission android:name=\"android.permission.CAMERA\"/>"
+        ],
+        "minSdkVersion": 21,
+        "targetSdkVersion": 30,
+        "abiFilters": [
+          "armeabi-v7a",
+          "arm64-v8a"
+        ],
+        "usesCleartextTraffic": true
+      },
+      "ios": {},
+      "sdkConfigs": {},
+      "icons": {
+        "android": {},
+        "ios": {}
+      }
+    }
+  },
+  "h5": {
+    "title": "校园墙",
+    "router": {
+      "mode": "hash"
+    },
+    "devServer": {
+      "port": 8080,
+      "proxy": {
+        "/api": {
+          "target": "http://127.0.0.1:8000",
+          "changeOrigin": true
+        },
+        "/uploads": {
+          "target": "http://127.0.0.1:8000",
+          "changeOrigin": true
+        }
+      }
+    }
+  },
+  "vueVersion": "3"
+}

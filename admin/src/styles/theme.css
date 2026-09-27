@@ -1,0 +1,76 @@
+/* 校园墙管理后台 · 全局主题（靛紫晨曦） */
+:root {
+  --el-color-primary: #6366f1;
+  --el-color-primary-light-3: #8b8cf5;
+  --el-color-primary-light-5: #a5a6f8;
+  --el-color-primary-light-7: #c5c6fb;
+  --el-color-primary-light-8: #d9dafd;
+  --el-color-primary-light-9: #eef0fe;
+  --el-color-primary-dark-2: #4f46e5;
+  --el-color-success: #14b8a6;
+  --el-color-warning: #f59e0b;
+  --el-color-danger: #f43f5e;
+  --el-color-error: #f43f5e;
+  --el-border-radius-base: 10px;
+  --el-font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --brand: #6366f1;
+  --brand-deep: #4f46e5;
+  --grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 52%, #a855f7 100%);
+  --ink: #181826;
+  --ink-2: #5c5f72;
+  --ink-3: #9a9daf;
+  --bg: #f4f5fb;
+  --line: #eeeef4;
+}
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+/* 卡片：轻阴影、大圆角 */
+.el-card {
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.04), 0 10px 28px rgba(79, 70, 229, 0.06) !important;
+}
+.el-card__body { padding: 22px; }
+/* 按钮 */
+.el-button { border-radius: 10px; font-weight: 600; }
+.el-button--primary {
+  background: var(--grad);
+  border: none;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+.el-button--primary:hover { opacity: 0.92; }
+/* 标签 */
+.el-tag { border-radius: 8px; font-weight: 600; border: none; }
+/* 输入类 */
+.el-input__wrapper, .el-textarea__inner { border-radius: 10px; box-shadow: 0 0 0 1px var(--line) inset; }
+.el-input__wrapper.is-focus, .el-textarea__inner:focus { box-shadow: 0 0 0 1px var(--brand) inset; }
+/* 表格 */
+.el-table { border-radius: 12px; overflow: hidden; }
+.el-table th.el-table__cell {
+  background: #f6f6fe !important;
+  color: var(--ink-2);
+  font-weight: 700;
+}
+.el-table td.el-table__cell { color: var(--ink); }
+/* 分页 */
+.el-pagination { font-weight: 500; }
+/* 对话框 */
+.el-dialog { border-radius: 18px; overflow: hidden; }
+.el-dialog__header { margin-right: 0; padding: 20px 24px; border-bottom: 1px solid var(--line); }
+.el-dialog__title { font-weight: 800; color: var(--ink); }
+.el-dialog__body { padding: 24px; color: var(--ink-2); }
+.el-dialog__footer { padding: 14px 24px 20px; }
+/* 菜单 */
+.el-menu { border-right: none !important; }
+/* 窄屏适配 */
+@media (max-width: 640px) {
+  .el-card__body { padding: 14px; }
+  .el-table { font-size: 13px; }
+}

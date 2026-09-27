@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.campuswall.app">
+
+    <!-- 当前后端使用 HTTP IP 调试，必须允许明文网络请求；正式上线改 HTTPS 后可移除 -->
+    <application
+        android:usesCleartextTraffic="true"
+        tools:targetApi="28" />
+
+</manifest>

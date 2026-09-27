@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Base64 编解码</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f7fa;color:#333;padding:16px}.c{max-width:900px;margin:0 auto}h1{font-size:20px;font-weight:700;margin-bottom:14px}.p{margin-bottom:16px}label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#555}textarea{width:100%;min-height:120px;padding:12px;border:1px solid #ddd;border-radius:10px;font-family:monospace;font-size:13px;line-height:1.6;resize:vertical;outline:none}textarea:focus{border-color:#6366f1}.tb{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}button{padding:8px 16px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:13px}button:hover{border-color:#6366f1;color:#6366f1}button.p{background:#6366f1;color:#fff;border-color:#6366f1}.st{margin-top:8px;font-size:13px;padding:8px 12px;border-radius:8px;display:none}.st.ok{display:block;background:#dcfce7;color:#166534}.st.err{display:block;background:#fee2e2;color:#991b1b}</style>
+</head><body><div class="c"><h1>Base64 编解码</h1>
+<div class="p"><label>原文</label><textarea id="txt" placeholder="输入要编码的文本"></textarea></div>
+<div class="tb"><button class="p" onclick="enc()">编码 →</button><button onclick="dec()">← 解码</button><button onclick="cp(0)">复制原文</button><button onclick="cp(1)">复制结果</button><button onclick="clr()">清空</button></div>
+<div class="p"><label>Base64 结果</label><textarea id="b64" placeholder="输入要解码的 Base64"></textarea></div>
+<div id="st" class="st"></div></div>
+<script>const t=document.getElementById('txt'),b=document.getElementById('b64'),s=document.getElementById('st');
+function show(m,ok){s.textContent=m;s.className='st '+(ok?'ok':'err')}
+function enc(){try{b.value=btoa(unescape(encodeURIComponent(t.value)));show('编码完成',true)}catch(e){show('编码失败',false)}}
+function dec(){try{t.value=decodeURIComponent(escape(atob(b.value.trim())));show('解码完成',true)}catch(e){show('解码失败：无效的 Base64',false)}}
+function cp(i){navigator.clipboard.writeText(i?b.value:t.value).then(()=>show('已复制',true))}
+function clr(){t.value='';b.value='';s.style.display='none'}</script></body></html>

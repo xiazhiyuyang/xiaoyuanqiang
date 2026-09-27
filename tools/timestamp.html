@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>时间戳转换</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f7fa;color:#333;padding:16px}.c{max-width:700px;margin:0 auto}h1{font-size:20px;font-weight:700;margin-bottom:14px}.nc{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:20px;border-radius:14px;margin-bottom:18px;text-align:center}.nc .l{font-size:12px;opacity:.8;margin-bottom:6px}.nc .t{font-size:32px;font-weight:700;font-family:monospace}.nc .d{font-size:14px;margin-top:6px;opacity:.9}.pn{background:#fff;padding:16px;border-radius:12px;margin-bottom:14px;border:1px solid #eee}.pn h3{font-size:14px;font-weight:600;margin-bottom:10px}.r{display:flex;gap:8px;margin-bottom:8px}input{flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;font-family:monospace}input:focus{border-color:#6366f1}button{padding:10px 16px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;white-space:nowrap}button:hover{border-color:#6366f1;color:#6366f1}button.p{background:#6366f1;color:#fff;border-color:#6366f1}.res{margin-top:8px;padding:10px 12px;background:#f0f4ff;border-radius:8px;font-size:13px;font-family:monospace;color:#4338ca;word-break:break-all}.ut{display:flex;gap:6px;margin-bottom:10px}.ut .tab{padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;background:#eee;color:#666}.ut .tab.on{background:#6366f1;color:#fff}</style>
+</head><body><div class="c"><h1>时间戳转换</h1>
+<div class="nc"><div class="l">当前时间</div><div class="t" id="nt">0</div><div class="d" id="nd"></div></div>
+<div class="pn"><h3>时间戳 → 日期</h3>
+<div class="ut"><div class="tab on" onclick="su('s',this)">秒 (s)</div><div class="tab" onclick="su('ms',this)">毫秒 (ms)</div></div>
+<div class="r"><input id="ti" type="text" placeholder="输入时间戳"><button class="p" onclick="t2d()">转换</button></div>
+<div id="tr" class="res" style="display:none"></div></div>
+<div class="pn"><h3>日期 → 时间戳</h3>
+<div class="r"><input id="di" type="datetime-local" step="1"><button class="p" onclick="d2t()">转换</button></div>
+<div id="dr" class="res" style="display:none"></div></div></div>
+<script>let u='s';function su(x,el){u=x;document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on')}
+function pad(n){return String(n).padStart(2,'0')}
+function fmt(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())}
+function up(){const n=Date.now();document.getElementById('nt').textContent=u==='s'?Math.floor(n/1000):n;document.getElementById('nd').textContent=fmt(new Date(n))}
+setInterval(up,1000);up();
+function t2d(){const v=document.getElementById('ti').value.trim();if(!v)return;let ts=parseFloat(v);if(u==='s')ts*=1000;const d=new Date(ts);if(isNaN(d.getTime())){alert('无效时间戳');return}const el=document.getElementById('tr');el.style.display='block';el.innerHTML='日期：'+fmt(d)+'<br>UTC：'+d.toUTCString()}
+function d2t(){const v=document.getElementById('di').value;if(!v)return;const d=new Date(v);if(isNaN(d.getTime())){alert('无效日期');return}const el=document.getElementById('dr');el.style.display='block';const ms=d.getTime();el.innerHTML='秒：'+Math.floor(ms/1000)+'<br>毫秒：'+ms+'<br>ISO：'+d.toISOString()}</script></body></html>

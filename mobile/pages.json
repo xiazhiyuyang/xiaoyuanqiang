@@ -1,0 +1,180 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "校园墙",
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/message/inbox",
+      "style": {
+        "navigationBarTitleText": "消息",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/post/detail",
+      "style": {
+        "navigationBarTitleText": "帖子详情"
+      }
+    },
+    {
+      "path": "pages/post/create",
+      "style": {
+        "navigationBarTitleText": "发布动态"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录 / 注册"
+      }
+    },
+    {
+      "path": "pages/agreement/privacy",
+      "style": {
+        "navigationBarTitleText": "隐私政策与用户协议"
+      }
+    },
+    {
+      "path": "pages/user/follows",
+      "style": {
+        "navigationBarTitleText": "关注与粉丝"
+      }
+    },
+    {
+      "path": "pages/user/profile",
+      "style": {
+        "navigationBarTitleText": "个人主页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/profile/edit",
+      "style": {
+        "navigationBarTitleText": "编辑资料"
+      }
+    },
+    {
+      "path": "pages/profile/privacy",
+      "style": {
+        "navigationBarTitleText": "资料可见范围"
+      }
+    },
+    {
+      "path": "pages/message/chat",
+      "style": {
+        "navigationBarTitleText": "私信"
+      }
+    },
+    {
+      "path": "pages/notifications/list",
+      "style": {
+        "navigationBarTitleText": "互动消息"
+      }
+    },
+    {
+      "path": "pages/level/level",
+      "style": {
+        "navigationBarTitleText": "星轨等级"
+      }
+    },
+    {
+      "path": "pages/account/password",
+      "style": {
+        "navigationBarTitleText": "修改密码"
+      }
+    },
+    {
+      "path": "pages/account/security",
+      "style": {
+        "navigationBarTitleText": "密码找回保护"
+      }
+    },
+    {
+      "path": "pages/account/forgot",
+      "style": {
+        "navigationBarTitleText": "找回密码"
+      }
+    },
+    {
+      "path": "pages/review/center",
+      "style": {
+        "navigationBarTitleText": "审查中心"
+      }
+    },
+    {
+      "path": "pages/review/posts",
+      "style": {
+        "navigationBarTitleText": "内容审查"
+      }
+    },
+    {
+      "path": "pages/review/reports",
+      "style": {
+        "navigationBarTitleText": "举报审查"
+      }
+    },
+    {
+      "path": "pages/settings/settings",
+      "style": {
+        "navigationBarTitleText": "设置"
+      }
+    },
+    {
+      "path": "pages/profile/mine",
+      "style": {
+        "navigationBarTitleText": "我的发布与收藏",
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/search/search",
+      "style": {
+        "navigationBarTitleText": "搜索"
+      }
+    }
+  ],
+  "tabBar": {
+    "color": "#9a9daf",
+    "selectedColor": "#8b7cf6",
+    "backgroundColor": "#10123259",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/message/inbox",
+        "text": "消息",
+        "iconPath": "static/tab-message.png",
+        "selectedIconPath": "static/tab-message-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "static/tab-user.png",
+        "selectedIconPath": "static/tab-user-active.png"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "校园墙",
+    "navigationBarBackgroundColor": "#0a0c2b",
+    "backgroundColor": "#06071a"
+  }
+}

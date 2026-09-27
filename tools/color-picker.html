@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>颜色选择器</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f7fa;color:#333;padding:16px}.c{max-width:800px;margin:0 auto}h1{font-size:20px;font-weight:700;margin-bottom:14px}.mc{background:#fff;border-radius:14px;padding:20px;border:1px solid #eee;margin-bottom:14px}.pv{width:100%;height:120px;border-radius:12px;margin-bottom:16px;transition:background .15s;border:1px solid #eee}.r{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}.fd{flex:1;min-width:140px}.fd label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:#666}.fd input{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;font-family:monospace}.fd input:focus{border-color:#6366f1}input[type=color]{height:42px;padding:2px;cursor:pointer}.sr{display:flex;align-items:center;gap:10px;margin-bottom:10px}.sr label{width:30px;font-size:13px;font-weight:600;color:#666}.sr input[type=range]{flex:1}.sr .v{width:40px;text-align:right;font-size:13px;font-family:monospace;color:#6366f1;font-weight:600}.pt{font-size:14px;font-weight:600;margin:16px 0 10px;color:#444}.pl{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:8px}.sw{aspect-ratio:1;border-radius:10px;cursor:pointer;transition:transform .15s;border:1px solid rgba(0,0,0,.08);position:relative}.sw:hover{transform:scale(1.1);z-index:1}.sw .hx{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:9px;font-family:monospace;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5);opacity:0;transition:opacity .15s}.sw:hover .hx{opacity:1}</style>
+</head><body><div class="c"><h1>颜色选择器</h1>
+<div class="mc"><div class="pv" id="pv"></div>
+<div class="r"><div class="fd"><label>取色器</label><input type="color" id="pk" value="#6366f1" oninput="fp(this.value)"></div>
+<div class="fd"><label>HEX</label><input type="text" id="hx" value="#6366f1" oninput="fh(this.value)"></div>
+<div class="fd"><label>RGB</label><input type="text" id="rgb" readonly onclick="cp(this)"></div>
+<div class="fd"><label>HSL</label><input type="text" id="hsl" readonly onclick="cp(this)"></div></div>
+<div class="sr"><label>H</label><input type="range" id="h" min="0" max="360" value="239" oninput="fhl()"><span class="v" id="hv">239</span></div>
+<div class="sr"><label>S</label><input type="range" id="s" min="0" max="100" value="93" oninput="fhl()"><span class="v" id="sv">93%</span></div>
+<div class="sr"><label>L</label><input type="range" id="l" min="0" max="100" value="67" oninput="fhl()"><span class="v" id="lv">67%</span></div></div>
+<div class="mc"><div class="pt">常用配色（点击使用）</div><div class="pl" id="pl"></div></div></div>
+<script>const cs=['#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#22c55e','#10b981','#14b8a6','#06b6d4','#0ea5e9','#3b82f6','#6366f1','#8b5cf6','#a855f7','#d946ef','#ec4899','#f43f5e','#78716c','#64748b','#1e293b'];
+const pl=document.getElementById('pl');cs.forEach(c=>{const d=document.createElement('div');d.className='sw';d.style.background=c;d.innerHTML='<span class="hx">'+c+'</span>';d.onclick=()=>fh(c);pl.appendChild(d)});
+function h2r(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]}
+function r2h(r,g,b){return '#'+[r,g,b].map(x=>Math.round(x).toString(16).padStart(2,'0')).join('')}
+function r2hl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b);let h,s,l=(mx+mn)/2;if(mx===mn){h=s=0}else{const d=mx-mn;s=l>.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=(g-b)/d+(g<b?6:0);break;case g:h=(b-r)/d+2;break;case b:h=(r-g)/d+4;break}h/=6}return[Math.round(h*360),Math.round(s*100),Math.round(l*100)]}
+function hl2r(h,s,l){h/=360;s/=100;l/=100;let r,g,b;if(s===0){r=g=b=l}else{const q=l<.5?l*(1+s):l+s-l*s,p=2*l-q;const f=t=>{if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p};r=f(h+1/3);g=f(h);b=f(h-1/3)}return[Math.round(r*255),Math.round(g*255),Math.round(b*255)]}
+function upd(hx){const[r,g,b]=h2r(hx);const[h,s,l]=r2hl(r,g,b);
+document.getElementById('pv').style.background=hx;document.getElementById('pk').value=hx;document.getElementById('hx').value=hx;
+document.getElementById('rgb').value='rgb('+r+', '+g+', '+b+')';document.getElementById('hsl').value='hsl('+h+', '+s+'%, '+l+'%)';
+document.getElementById('h').value=h;document.getElementById('hv').textContent=h;document.getElementById('s').value=s;document.getElementById('sv').textContent=s+'%';document.getElementById('l').value=l;document.getElementById('lv').textContent=l+'%'}
+function fp(v){upd(v)}function fh(v){if(/^#?[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/.test(v)){if(!v.startsWith('#'))v='#'+v;upd(v)}}
+function fhl(){const h=+document.getElementById('h').value,s=+document.getElementById('s').value,l=+document.getElementById('l').value;const[r,g,b]=hl2r(h,s,l);upd(r2h(r,g,b))}
+function cp(el){navigator.clipboard.writeText(el.value);el.style.borderColor='#22c55e';setTimeout(()=>el.style.borderColor='#ddd',800)}
+upd('#6366f1');</script></body></html>

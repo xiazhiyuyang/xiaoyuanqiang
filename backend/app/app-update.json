@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "latest_version": "1.2.3",
+  "version_code": 132,
+  "required": true,
+  "changelog": "1. 修复个人主页头像被横幅遮挡、用户名位置错位\n2. 更新下载后自动安装（广播+轮询双保险）\n3. 登录页网络提示改底部不挡标题",
+  "apk_url": "https://your-domain.com/app/campus-wall.apk"
+}

@@ -1,0 +1,32 @@
+services:
+  backend:
+    build: ./backend
+    container_name: campus-wall-backend
+    restart: unless-stopped
+    volumes:
+      - ./uploads:/app/uploads
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:////app/data/campus_wall.db
+      - SECRET_KEY=change-this-to-a-random-secret-key
+      - DEBUG=False
+      # 微信登录（可选）：填入小程序/公众号 AppID 与 Secret 后开启
+      - WECHAT_APP_ID=
+      - WECHAT_APP_SECRET=
+    expose:
+      - "8000"
+
+  nginx:
+    image: nginx:alpine
+    container_name: campus-wall-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./uploads:/var/www/uploads
+      - ./admin/dist:/var/www/admin
+      - ./mobile/dist/build/h5:/var/www/mobile
+    depends_on:
+      - backend

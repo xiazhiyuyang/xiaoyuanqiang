@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>正则表达式测试</title>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f7fa;color:#333;padding:16px}.c{max-width:900px;margin:0 auto}h1{font-size:20px;font-weight:700;margin-bottom:14px}.pn{background:#fff;padding:14px;border-radius:12px;margin-bottom:12px;border:1px solid #eee}label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:#666}input[type=text],textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;outline:none;font-family:monospace}input:focus,textarea:focus{border-color:#6366f1}textarea{min-height:140px;resize:vertical;line-height:1.6}.fg{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}.fi{display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer}.fi input{width:auto}.rp{background:#fff;padding:14px;border-radius:12px;border:1px solid #eee}.rp h3{font-size:14px;font-weight:600;margin-bottom:10px}.mc{font-size:13px;color:#6366f1;margin-bottom:10px;font-weight:600}.ht{font-family:monospace;font-size:13px;line-height:1.8;white-space:pre-wrap;word-break:break-all;background:#fafbfc;padding:12px;border-radius:8px;min-height:60px}.hl{background:#fef08a;color:#92400e;padding:1px 2px;border-radius:3px;font-weight:600}.gp{margin-top:12px}.gi{font-size:12px;padding:6px 10px;background:#f0f4ff;border-radius:6px;margin-bottom:4px;font-family:monospace;color:#4338ca}.err{color:#dc2626;font-size:13px;margin-top:8px}</style>
+</head><body><div class="c"><h1>正则表达式测试</h1>
+<div class="pn"><label>正则表达式（无需 / 包裹）</label>
+<input type="text" id="re" placeholder="例如：\d+ 或 [a-zA-Z]+" oninput="test()">
+<div class="fg"><label class="fi"><input type="checkbox" id="fg" checked onchange="test()"> g 全局</label>
+<label class="fi"><input type="checkbox" id="fi" onchange="test()"> i 忽略大小写</label>
+<label class="fi"><input type="checkbox" id="fm" onchange="test()"> m 多行</label>
+<label class="fi"><input type="checkbox" id="fs" onchange="test()"> s dotAll</label></div></div>
+<div class="pn"><label>测试文本</label>
+<textarea id="tx" oninput="test()">Hello World! 你好世界！
+电话：13812345678，邮箱：test@example.com
+IP：192.168.1.1，日期：2024-01-15</textarea></div>
+<div class="rp"><h3>匹配结果</h3>
+<div id="err" class="err" style="display:none"></div>
+<div id="mc" class="mc"></div>
+<div id="hl" class="ht"></div>
+<div id="gp" class="gp"></div></div></div>
+<script>function test(){const p=document.getElementById('re').value,tx=document.getElementById('tx').value;
+const err=document.getElementById('err'),mc=document.getElementById('mc'),hl=document.getElementById('hl'),gp=document.getElementById('gp');
+err.style.display='none';gp.innerHTML='';
+if(!p){mc.textContent='';hl.textContent=tx;return}
+let f='';if(document.getElementById('fg').checked)f+='g';if(document.getElementById('fi').checked)f+='i';if(document.getElementById('fm').checked)f+='m';if(document.getElementById('fs').checked)f+='s';
+let re;try{re=new RegExp(p,f)}catch(e){err.textContent='正则错误：'+e.message;err.style.display='block';mc.textContent='';hl.textContent=tx;return}
+const ms=[...tx.matchAll(re)];mc.textContent=ms.length?'匹配到 '+ms.length+' 个结果':'无匹配';
+if(!ms.length){hl.textContent=tx;return}
+let html='',last=0;ms.forEach((m,i)=>{const s=m.index,e=s+m[0].length;html+=esc(tx.slice(last,s));html+='<span class="hl">'+esc(m[0])+'</span>';last=e;
+if(m.length>1){const gs=m.slice(1).map((g,j)=>'$'+(j+1)+'='+(g??'(空)')).join(' | ');gp.innerHTML+='<div class="gi">#'+(i+1)+': '+gs+'</div>'}});
+html+=esc(tx.slice(last));hl.innerHTML=html}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+test();</script></body></html>
