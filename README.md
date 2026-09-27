@@ -2,6 +2,16 @@
 
 一个功能完整的校园社区系统，包含社区发帖、评论互动、私信聊天、AI内容审核、用户管理、设备/IP封禁、UID系统等功能。前后端分离，支持PC端、手机H5端和管理后台。
 
+> **免责声明**：本项目仅供学习和研究使用。创作者不对使用本项目造成的任何直接或间接损失承担责任。使用者应自行评估风险并承担全部责任。
+
+## 文档 / Documentation
+
+| 文档 | 中文 | English |
+|------|------|---------|
+| 项目介绍 / Introduction | [PROJECT_INTRODUCTION.zh-CN.md](./PROJECT_INTRODUCTION.zh-CN.md) | [PROJECT_INTRODUCTION.en.md](./PROJECT_INTRODUCTION.en.md) |
+| 项目结构 / Structure | [PROJECT_STRUCTURE.zh-CN.md](./PROJECT_STRUCTURE.zh-CN.md) | [PROJECT_STRUCTURE.en.md](./PROJECT_STRUCTURE.en.md) |
+| 部署文档 / Deployment | [DEPLOYMENT.zh-CN.md](./DEPLOYMENT.zh-CN.md) | [DEPLOYMENT.en.md](./DEPLOYMENT.en.md) |
+
 ## 技术栈
 
 - **后端**: Python 3.10+ / FastAPI / SQLAlchemy 2.0 (async) / SQLite
