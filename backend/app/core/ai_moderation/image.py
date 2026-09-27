@@ -58,7 +58,6 @@ def _resolve_local_path(url: str) -> str | None:
     return str(path) if path.exists() else None
 
 
-# ---------------- 本地启发式 ----------------
 def _local_analyze_bytes(content: bytes) -> dict:
     """肤色占比 + 纹理方差。返回 {"score": 0-100, "skin_ratio": float}。"""
     from PIL import Image
@@ -123,7 +122,6 @@ async def _local_check(url: str) -> tuple[int, dict]:
         return 0, {"url": url, "error": f"{type(exc).__name__}: {str(exc)[:100]}"}
 
 
-# ---------------- Sightengine ----------------
 async def _sightengine_check(url: str, cfg: AIConfig) -> tuple[int, dict]:
     endpoint = "https://api.sightengine.com/1.0/check.json"
     data = {
@@ -188,7 +186,6 @@ async def _sightengine_check(url: str, cfg: AIConfig) -> tuple[int, dict]:
                 pass
 
 
-# ---------------- 通用 HTTP 接口 ----------------
 def _dig_score(obj) -> int:
     """从各种可能的返回结构里挖出 0-100 的风险分。"""
     if not isinstance(obj, dict):

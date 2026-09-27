@@ -125,7 +125,6 @@ def decide(
             if c not in present:
                 present.append(c)
 
-    # -------- 分数：本地分、大模型分、图片分取加权最大 --------
     score = feature.score
     if llm_verdict and llm_verdict.score:
         # 大模型的自评分通常偏保守，按其置信度做一次融合
@@ -137,7 +136,6 @@ def decide(
     score = max(0, min(100, score))
     v.score = score
 
-    # -------- 分类策略（分类优先，分数只做有限升级） --------
     # 设计取向：后台「分类策略表」是运营意图的唯一权威来源，
     # 特征分不能随意把它抬高（否则把 abuse 设成打码也会被分数直接删帖，行为不可预期）。
     # 因此分类明确时：分数最多把动作升级一级；分类全部为「放行」时尊重运营的放行决定。
@@ -162,28 +160,24 @@ def decide(
         all_pass = False
         action = _score_action(score, cfg)
 
-    # -------- 词条自身动作优先：后台把某个词设为「拦截」就必须拦截 --------
     # 否则会被分类策略表（例如 ad 默认 review）架空，管理员改了词却不生效。
     for h in lexicon_hits:
         act = getattr(h, "action", "mask")
         if act in ("block", "review", "mask"):
             action = _strictest([action, act])
 
-    # -------- 硬红线：法定违法信息无条件拦截 --------
     legal_hits = [c for c in present if cats.is_legal(c)]
     if legal_hits:
         action = _strictest([action, "block"])
         for c in legal_hits:
             reasons.append(f"{cats.label(c)}：{cats.hint(c)}")
 
-    # -------- 受保护分类：永不自动拦截 --------
     protected_hits = [c for c in present if c in PROTECTED_CATEGORIES]
     if protected_hits and not legal_hits:
         if _ORDER[action] > _ORDER["review"]:
             action = "review"
         reasons.insert(0, "该类内容不会自动删除：已转人工并保留原文，请人工及时关怀跟进")
 
-    # -------- 本地启发式图片结论不得用于拦截 --------
     if image_verdict and image_verdict.local_only and image_verdict.max_score:
         if _ORDER[action] > _ORDER["review"]:
             action = "review"
@@ -197,7 +191,6 @@ def decide(
         action = _strictest([action, "review"])
         reasons.append(f"图片存在疑似违规内容（得分 {image_verdict.max_score}）")
 
-    # -------- 可读理由 --------
     if lexicon_hits:
         words = "、".join(dict.fromkeys([getattr(h, "word", "") for h in lexicon_hits]))[:50]
         worst = max((getattr(h, "severity", 3) or 3) for h in lexicon_hits)
@@ -229,7 +222,6 @@ def decide(
             uniq.append(r[:120])
     v.reasons = uniq[:6]
 
-    # -------- 风险等级 --------
     order = _ORDER[action]
     level = _LEVEL_BY_ORDER[order]
     if score >= 90 or (llm_verdict and llm_verdict.risk_level == "critical"):
@@ -253,7 +245,6 @@ def decide(
     v.categories = present[:8]
     v.requested_action = action
 
-    # -------- 观察模式：只记录不处置 --------
     if cfg.dry_run:
         v.action = "pass"
         if action != "pass":

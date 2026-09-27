@@ -296,7 +296,6 @@ async def wechat_login(data: WechatLogin, request: Request, db: AsyncSession = D
     return Result(data=Token(access_token=token, user=UserResponse.from_user(user)))
 
 
-# ==================== 邮箱注册/登录/找回 ====================
 
 @router.post("/email/register", response_model=Result[dict])
 async def email_register(data: EmailRegister, request: Request, db: AsyncSession = Depends(get_db)):

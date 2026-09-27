@@ -240,7 +240,6 @@ async function saveSq() {
   catch (e) { toast.error(e.message) } finally { saving.sq = false }
 }
 
-// ===== 账号注销 =====
 const deletionPwd = ref('')
 const requesting = ref(false)
 const canceling = ref(false)

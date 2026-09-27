@@ -82,7 +82,6 @@ async def _purge_user(db: AsyncSession, user: User):
     await db.delete(user)
 
 
-# ---------- 数据概览 ----------
 @router.get("/stats", response_model=Result[dict])
 async def stats(
     db: AsyncSession = Depends(get_db),
@@ -90,7 +89,6 @@ async def stats(
 ):
     today = datetime.now(timezone.utc).date()
 
-    # ---- 核心计数 ----
     user_count = (await db.execute(select(func.count()).select_from(User))).scalar()
     post_count = (await db.execute(
         select(func.count()).select_from(Post).where(Post.status == "published")
@@ -115,7 +113,6 @@ async def stats(
         select(func.count()).select_from(User).where(func.date(User.created_at) == today)
     )).scalar()
 
-    # ---- 互动总量 ----
     agg = await db.execute(select(
         func.coalesce(func.sum(Post.view_count), 0),
         func.coalesce(func.sum(Post.like_count), 0),
@@ -123,7 +120,6 @@ async def stats(
     total_views, total_likes = agg.one()
     total_favorites = (await db.execute(select(func.count()).select_from(Favorite))).scalar()
 
-    # ---- 近 7 天发帖趋势（单条分组查询，Python 侧补零，避免 N+1）----
     since7 = datetime.now(timezone.utc) - timedelta(days=6)
     trend_rows = await db.execute(
         select(func.date(Post.created_at), func.count())
@@ -136,7 +132,6 @@ async def stats(
         day = (datetime.now(timezone.utc) - timedelta(days=i)).date()
         trend.append({"date": day.strftime("%m-%d"), "count": trend_map.get(day.isoformat(), 0)})
 
-    # ---- 分类分布（已发布帖）----
     cat_rows = await db.execute(
         select(Category.id, Category.name, Category.slug, func.count(Post.id))
         .outerjoin(Post, (Post.category_id == Category.id) & (Post.status == "published"))
@@ -148,7 +143,6 @@ async def stats(
         for r in cat_rows.all()
     ]
 
-    # ---- 最近帖子（含待审/已删，管理员全可见）----
     recent_post_rows = await db.execute(
         select(Post)
         .options(selectinload(Post.author))
@@ -171,7 +165,6 @@ async def stats(
             "created_at": p.created_at.isoformat() if p.created_at else None,
         })
 
-    # ---- 最近注册用户 ----
     recent_user_rows = await db.execute(
         select(User).order_by(desc(User.created_at)).limit(6)
     )
@@ -212,7 +205,6 @@ async def stats(
     })
 
 
-# ---------- 用户管理 ----------
 @router.get("/users", response_model=Result[PageResponse[dict]])
 async def list_users(
     page: int = Query(1, ge=1),
@@ -456,7 +448,6 @@ async def admin_set_permissions(
     return Result(data={"perms": perms}, msg="授权已更新")
 
 
-# ---------- UID 号段管理 ----------
 @router.get("/uids/stats", response_model=Result[dict])
 async def admin_uid_stats(
     db: AsyncSession = Depends(get_db),
@@ -621,7 +612,6 @@ async def admin_change_own_password(
     return Result(msg="密码修改成功")
 
 
-# ---------- 帖子管理 ----------
 @router.get("/posts", response_model=Result[PageResponse[dict]])
 async def list_all_posts(
     page: int = Query(1, ge=1),
@@ -757,7 +747,6 @@ async def admin_delete_post(
     return Result(msg="已删除")
 
 
-# ---------- 评论管理 ----------
 @router.get("/comments", response_model=Result[PageResponse[dict]])
 async def list_comments(
     page: int = Query(1, ge=1),
@@ -811,7 +800,6 @@ async def admin_delete_comment(
     return Result(msg="已删除")
 
 
-# ---------- 分类管理 ----------
 @router.post("/categories", response_model=Result[CategoryResponse])
 async def create_category(
     data: CategoryCreate,
@@ -846,7 +834,6 @@ async def delete_category(
     return Result(msg="已删除")
 
 
-# ---------- 举报审核 ----------
 @router.get("/reports", response_model=Result[PageResponse[dict]])
 async def list_reports(
     page: int = Query(1, ge=1),
@@ -956,7 +943,6 @@ async def handle_report(
                   data={"actions": action_taken})
 
 
-# ---------- 敏感词管理 ----------
 @router.get("/sensitive-words", response_model=Result[PageResponse[dict]])
 async def list_sensitive_words(
     page: int = Query(1, ge=1),
@@ -1071,7 +1057,6 @@ async def batch_import_sensitive_words(
                   data={"added": added, "skipped": len(words) - added})
 
 
-# ---------- 广告位管理 ----------
 def _banner_dict(b: Banner) -> dict:
     return {
         "id": b.id, "title": b.title, "image_url": b.image_url,
@@ -1136,7 +1121,6 @@ async def admin_delete_banner(
     return Result(msg="已删除")
 
 
-# ---------- 公告位管理 ----------
 def _announcement_dict(a: Announcement) -> dict:
     return {
         "id": a.id, "content": a.content, "link_url": a.link_url,
@@ -1200,7 +1184,6 @@ async def admin_delete_announcement(
     return Result(msg="已删除")
 
 
-# ---------- 操作日志 ----------
 @router.get("/logs", response_model=Result[PageResponse[dict]])
 async def list_logs(
     page: int = Query(1, ge=1),
@@ -1243,7 +1226,6 @@ async def log_actions(
     return Result(data=[{"action": k, "label": v} for k, v in ACTION_LABELS.items()])
 
 
-# ---------- 站点设置 ----------
 _BOOL_SETTING_KEYS = (
     "allow_register", "maintenance", "post_need_review", "allow_anonymous",
     "allow_video", "message_open", "show_level",
@@ -1295,14 +1277,10 @@ async def set_site_settings(
 ):
     changes = {}
     payload = data.model_dump(exclude_unset=True)
-    print(f"[SETTINGS_DEBUG] payload keys={list(payload.keys())}", flush=True)
-    print(f"[SETTINGS_DEBUG] payload full={payload}", flush=True)
     for key, value in payload.items():
         if key not in SETTING_DEFAULTS:
-            print(f"[SETTINGS_DEBUG] skip {key}: not in SETTING_DEFAULTS", flush=True)
             continue
         if value is None:
-            print(f"[SETTINGS_DEBUG] skip {key}: value is None (blank/invalid)", flush=True)
             continue
         if isinstance(value, bool):
             changes[key] = "1" if value else "0"
@@ -1310,8 +1288,6 @@ async def set_site_settings(
             changes[key] = str(value)
         else:
             changes[key] = (value or "").strip()
-    print(f"[SETTINGS_DEBUG] actual changes={changes}", flush=True)
-    # 兼容旧开关：一旦开启「发帖先审核」，同步为全部审核模式
     if changes.get("post_need_review") == "1":
         changes["review_mode"] = "all"
     if not changes:
@@ -1324,7 +1300,6 @@ async def set_site_settings(
     return Result(data=_settings_form(result), msg="设置已保存")
 
 
-# ---------- App 更新配置（需求8配套：后台直接发整包 APK 冷更新） ----------
 @router.get("/app-update", response_model=Result[dict])
 async def admin_get_app_update(
     admin: User = Depends(get_admin_user),

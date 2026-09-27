@@ -1,16 +1,9 @@
-// ============================================================
 // 实时通道（WebSocket）封装
-//
-// 设计原则：**WS 是优化，不是依赖。**
-// 连不上、被代理掐断、后端未升级——任何情况下都要能让页面退回轮询继续工作，
-// 所以本模块对外只暴露「有没有连上」和「事件回调」，不抛异常、不阻塞。
-//
-// 用法：
-//   import { realtime } from '../../utils/ws'
-//   realtime.on('message', handler)      // 注册监听（返回取消函数）
-//   realtime.connect()                   // 幂等，重复调用不会开第二条连接
-//   realtime.isConnected()               // false 时调用方应启用轮询兜底
-// ============================================================
+// WS是优化不是依赖：连不上时页面退回轮询继续工作。
+// 用法：import { realtime } from '../../utils/ws'
+//   realtime.on('message', handler)  // 注册监听（返回取消函数）
+//   realtime.connect()                // 幂等，重复调用不会开第二条连接
+//   realtime.isConnected()            // false时调用方应启用轮询兜底
 import { WS_URL } from './api'
 
 const HEARTBEAT_INTERVAL = 30000   // 客户端心跳，需小于服务端 90s 接收超时

@@ -49,7 +49,6 @@ _SCALAR_FIELDS = [
 ]
 
 
-# ---------- 配置辅助 ----------
 async def get_config(db: AsyncSession) -> AIReviewConfig:
     cfg = (await db.execute(select(AIReviewConfig).where(AIReviewConfig.id == 1))).scalar_one_or_none()
     if not cfg:
@@ -111,7 +110,6 @@ def config_to_dict(cfg: AIReviewConfig, lexicon_size: int = 0) -> dict:
     }
 
 
-# ---------- ① 概览 ----------
 @router.get("/overview", response_model=Result[dict])
 async def overview(db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     now = datetime.utcnow()
@@ -141,7 +139,6 @@ async def overview(db: AsyncSession = Depends(get_db), admin: User = Depends(get
     })
 
 
-# ---------- 记录序列化 ----------
 def _record_to_item(r: AIReviewRecord) -> dict:
     ev = r.evidence or {}
     reasons = (ev.get("reasons")) if isinstance(ev, dict) else None
@@ -172,7 +169,6 @@ def _record_to_item(r: AIReviewRecord) -> dict:
     }
 
 
-# ---------- ② 记录列表 ----------
 @router.get("/records", response_model=Result[PageResponse[dict]])
 async def list_records(
     page: int = Query(1, ge=1),
@@ -225,7 +221,6 @@ async def list_records(
     ))
 
 
-# ---------- ③ 记录详情 ----------
 @router.get("/records/{record_id}", response_model=Result[dict])
 async def record_detail(record_id: int, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     r = (await db.execute(select(AIReviewRecord).where(AIReviewRecord.id == record_id))).scalar_one_or_none()
@@ -250,7 +245,6 @@ async def record_detail(record_id: int, db: AsyncSession = Depends(get_db), admi
     return Result(data=item)
 
 
-# ---------- ④ 处理记录 ----------
 @router.post("/records/{record_id}/handle", response_model=Result)
 async def handle_record(record_id: int, payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     r = (await db.execute(select(AIReviewRecord).where(AIReviewRecord.id == record_id))).scalar_one_or_none()
@@ -292,7 +286,6 @@ async def handle_record(record_id: int, payload: dict, db: AsyncSession = Depend
     return Result(msg="已处理")
 
 
-# ---------- ⑤ 获取配置 ----------
 @router.get("/config", response_model=Result[dict])
 async def get_config_api(db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     cfg = await get_config(db)
@@ -300,7 +293,6 @@ async def get_config_api(db: AsyncSession = Depends(get_db), admin: User = Depen
     return Result(data=config_to_dict(cfg, size))
 
 
-# ---------- ⑥ 更新配置 ----------
 @router.put("/config", response_model=Result)
 async def update_config(payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     cfg = await get_config(db)
@@ -333,7 +325,6 @@ async def update_config(payload: dict, db: AsyncSession = Depends(get_db), admin
     return Result(msg="配置已保存")
 
 
-# ---------- ⑦ 测试 LLM ----------
 @router.post("/config/test-llm", response_model=Result[dict])
 async def test_llm(payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     base = (payload.get("llm_base_url") or "").rstrip("/")
@@ -367,7 +358,6 @@ async def test_llm(payload: dict, db: AsyncSession = Depends(get_db), admin: Use
         return Result(data={"ok": False, "latency_ms": latency, "sample_verdict": {}, "msg": f"连接失败：{e}"})
 
 
-# ---------- ⑧ 测试图片审核 ----------
 @router.post("/config/test-image", response_model=Result[dict])
 async def test_image(payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     provider = payload.get("image_provider") or "local"
@@ -376,7 +366,6 @@ async def test_image(payload: dict, db: AsyncSession = Depends(get_db), admin: U
     return Result(data={"ok": True, "msg": f"图片审查接口 {provider} 配置已保存，将在实际上传时调用"})
 
 
-# ---------- ⑨ 在线试审 ----------
 @router.post("/test", response_model=Result[dict])
 async def test_review(payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     title = payload.get("title", "") or ""
@@ -397,7 +386,6 @@ async def test_review(payload: dict, db: AsyncSession = Depends(get_db), admin: 
     })
 
 
-# ---------- ⑩ 规则列表 ----------
 @router.get("/rules", response_model=Result[dict])
 async def get_rules(db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     return Result(data={
@@ -409,7 +397,6 @@ async def get_rules(db: AsyncSession = Depends(get_db), admin: User = Depends(ge
     })
 
 
-# ---------- ⑪ 词库导入 ----------
 @router.post("/lexicon/import", response_model=Result[dict])
 async def import_lexicon(payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     existing = (await db.execute(select(SensitiveWord.word))).scalars().all()
@@ -437,7 +424,6 @@ async def import_lexicon(payload: dict, db: AsyncSession = Depends(get_db), admi
     return Result(data={"imported": imported, "skipped": skipped, "categories": cat_stat})
 
 
-# ---------- ⑫ 申诉列表 ----------
 @router.get("/appeals", response_model=Result[PageResponse[dict]])
 async def list_appeals(
     page: int = Query(1, ge=1),
@@ -481,7 +467,6 @@ async def list_appeals(
     ))
 
 
-# ---------- ⑬ 处理申诉 ----------
 @router.post("/appeals/{appeal_id}/handle", response_model=Result)
 async def handle_appeal(appeal_id: int, payload: dict, db: AsyncSession = Depends(get_db), admin: User = Depends(get_admin_user)):
     a = (await db.execute(select(AIReviewAppeal).where(AIReviewAppeal.id == appeal_id))).scalar_one_or_none()

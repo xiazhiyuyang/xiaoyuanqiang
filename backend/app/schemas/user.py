@@ -290,7 +290,6 @@ class UserResponse(BaseModel):
         })
 
 
-# ---------- 账号安全 / 管理相关 ----------
 class ChangePassword(BaseModel):
     old_password: str = Field(min_length=1)
     new_password: str = Field(max_length=64)

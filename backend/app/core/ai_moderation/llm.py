@@ -89,7 +89,6 @@ class LLMVerdict:
         }
 
 
-# ---------------- 进程内缓存 / 熔断 / 配额 ----------------
 _cache: dict[str, tuple[float, LLMVerdict]] = {}
 _cache_order: list[str] = []
 _CACHE_MAX = 2000
@@ -164,7 +163,6 @@ def clear_cache() -> None:
     _cache_order.clear()
 
 
-# ---------------- 调用 ----------------
 def _extract_json(content: str) -> dict | None:
     if not content:
         return None

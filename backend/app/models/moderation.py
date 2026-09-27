@@ -86,7 +86,6 @@ class ModerationRecord(Base):
         DateTime(timezone=True), default=now_utc, index=True
     )
 
-    # ---- JSON 访问器 ----
     @property
     def categories(self) -> list[str]:
         return _loads(self.categories_json, [])

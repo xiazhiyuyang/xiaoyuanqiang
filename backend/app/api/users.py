@@ -578,7 +578,6 @@ async def list_user_posts(
     ))
 
 
-# ==================== 账号注销机制 ====================
 
 DELETION_COOLDOWN_DAYS = 7  # 注销冷静期 7 天
 
@@ -693,7 +692,6 @@ async def cancel_deletion(
     if not user.deletion_requested_at:
         raise HTTPException(status_code=400, detail="当前没有待处理的注销申请")
 
-    # 检查是否已到期
     deleted = await check_and_execute_deletion(db, user)
     if deleted:
         raise HTTPException(status_code=401, detail="账号已注销，无法撤销")

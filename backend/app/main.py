@@ -182,7 +182,6 @@ async def migrate_db():
                 "exempt_staff": "BOOLEAN DEFAULT 0",
             })
 
-            # ---- 设备与封禁表 ----
             sync_conn.exec_driver_sql("""
                 CREATE TABLE IF NOT EXISTS devices (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -233,7 +232,6 @@ async def migrate_db():
             sync_conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_device_bans_device_code ON device_bans(device_code)")
             sync_conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_device_bans_is_active ON device_bans(is_active)")
 
-            # ---- 封禁表字段升级（指纹哈希、CIDR、递增封禁、自动封禁）----
             alter_statements = [
                 "ALTER TABLE devices ADD COLUMN fingerprint_hash VARCHAR(32)",
                 "ALTER TABLE ip_bans ADD COLUMN is_cidr BOOLEAN DEFAULT 0",
@@ -249,7 +247,6 @@ async def migrate_db():
             sync_conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_devices_fingerprint_hash ON devices(fingerprint_hash)")
             sync_conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_device_bans_fingerprint_hash ON device_bans(fingerprint_hash)")
 
-            # ---- IP白名单表 ----
             sync_conn.exec_driver_sql("""
                 CREATE TABLE IF NOT EXISTS ip_whitelist (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -260,7 +257,6 @@ async def migrate_db():
                 )
             """)
 
-            # ---- 登录失败记录表（自动封禁用，参考 fail2ban 滑动窗口）----
             sync_conn.exec_driver_sql("""
                 CREATE TABLE IF NOT EXISTS login_failures (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -291,7 +287,6 @@ async def migrate_db():
             sync_conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_email_verifications_email ON email_verifications(email)")
             sync_conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_email_verifications_token ON email_verifications(token)")
 
-            # ---- 性能索引补齐（CREATE INDEX IF NOT EXISTS 对已有库幂等）----
             index_statements = [
                 # users：按角色/封禁筛选
                 "CREATE INDEX IF NOT EXISTS ix_users_role ON users(role)",

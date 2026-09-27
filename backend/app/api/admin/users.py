@@ -24,7 +24,6 @@ from app.api.admin import _utils
 router = APIRouter(prefix="/api/admin", tags=["管理后台"])
 
 
-# ---------- 敏感操作二次确认 token ----------
 @router.post("/confirm-token", response_model=Result[dict])
 async def issue_confirm_token(
     body: dict,
@@ -43,7 +42,6 @@ async def issue_confirm_token(
                   msg="确认令牌已生成，请在 5 分钟内通过请求头 X-Confirm-Token 完成操作")
 
 
-# ---------- 用户列表 / 回收站 ----------
 @router.get("/users", response_model=Result[PageResponse[dict]])
 async def list_users(
     page: int = Query(1, ge=1),
@@ -338,7 +336,6 @@ async def admin_set_permissions(
     return Result(data={"perms": perms}, msg="授权已更新")
 
 
-# ---------- UID 号段管理 ----------
 @router.get("/uids/stats", response_model=Result[dict])
 async def admin_uid_stats(
     db: AsyncSession = Depends(get_db),

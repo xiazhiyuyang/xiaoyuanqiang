@@ -13,7 +13,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.device import Device, IPBan, DeviceBan, IPWhitelist, LoginFailure
 
-# ============ 自动封禁配置（参考 fail2ban） ============
 AUTO_BAN_MAX_FAILURES = 10          # 滑动窗口内最大失败次数
 AUTO_BAN_WINDOW_MINUTES = 10        # 滑动窗口时长（分钟）
 AUTO_BAN_DURATIONS = [              # 递增封禁时长（小时），第N次封禁对应索引N-1
@@ -90,7 +89,6 @@ def _parse_iso(s: str | None) -> datetime | None:
         return None
 
 
-# ============ IP 白名单 ============
 async def is_ip_whitelisted(db: AsyncSession, ip: str) -> bool:
     """检查IP是否在白名单中（支持精确匹配和CIDR段匹配）。"""
     result = await db.execute(select(IPWhitelist))
@@ -112,7 +110,6 @@ async def is_ip_whitelisted(db: AsyncSession, ip: str) -> bool:
     return False
 
 
-# ============ IP 封禁检查 ============
 def _ip_matches_ban(ip: str, ban_ip: str, is_cidr: bool) -> bool:
     """检查IP是否匹配封禁规则（支持CIDR段）。"""
     if not is_cidr:
@@ -148,7 +145,6 @@ async def check_ip_banned(db: AsyncSession, ip: str) -> IPBan | None:
     return None
 
 
-# ============ 设备封禁检查 ============
 async def check_device_banned(
     db: AsyncSession, device_code: str | None, fingerprint_hash: str | None
 ) -> DeviceBan | None:
@@ -176,7 +172,6 @@ async def check_device_banned(
     return None
 
 
-# ============ 设备登录记录 ============
 async def record_device_login(
     db: AsyncSession,
     user_id: int,
@@ -224,7 +219,6 @@ async def record_device_login(
     return device
 
 
-# ============ 登录失败记录与自动封禁（参考 fail2ban） ============
 async def record_login_failure(
     db: AsyncSession,
     ip: str,
@@ -312,7 +306,6 @@ async def clear_login_failures(db: AsyncSession, ip: str) -> None:
     await db.commit()
 
 
-# ============ 封禁/解封操作 ============
 async def ban_ip(
     db: AsyncSession, ip: str, reason: str,
     banned_by: int, banned_by_name: str,
@@ -418,5 +411,4 @@ async def unban_device(db: AsyncSession, device_code: str | None, fingerprint_ha
     return True
 
 
-# 需要导入 or_
 from sqlalchemy import or_  # noqa: E402

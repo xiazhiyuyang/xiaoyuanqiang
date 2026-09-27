@@ -1,31 +1,20 @@
-// ============================================================
 // API 请求封装
-// 【打包 APK 前必改】把下面 SERVER 改成你后端服务器的「公网可访问」地址。
-// H5 端走同源/代理用 '/api'；App(APK)/小程序必须用完整 http(s) 地址。
-//
-// 注意：这里必须写 **HTTPS 域名**，不能写 http://IP。
-// 站点 Nginx 的 server_name 是 cy.ihyuan.cn，用 IP 作 Host 的请求会落到
-// 宝塔默认站点（root=/www/server/nginx/html）直接 404——历史上源码里
-// 长期写着 http://your-backend-host，而实际发布的 APK 是手工改成域名才打包的，
-// 属于「源码与产物不一致」的坑，现已修正。
-// ============================================================
+// 打包APK前需将 SERVER 改为后端公网地址，必须使用HTTPS域名。
+// H5端走同源相对路径；App/小程序必须用完整地址。
 const SERVER = 'https://cy.ihyuan.cn'
-// H5 必须留空走同源相对路径：站点是 HTTPS，若把媒体地址拼成 http://IP，
-// 浏览器会按「混合内容」直接拦截，全站图片和头像都会裂开。
 let SERVER_URL = SERVER
 // #ifdef H5
 SERVER_URL = ''
 // #endif
 export { SERVER_URL }
 
-let BASE_URL = '/api' // H5：相对路径，走 devServer 代理 / Nginx 同源
+let BASE_URL = '/api'
 // #ifndef H5
-BASE_URL = SERVER + '/api' // App(APK) / 小程序：必须完整地址
+BASE_URL = SERVER + '/api'
 // #endif
 export const API_BASE_URL = BASE_URL
 
-// WebSocket 地址：H5 同源自动继承 http/https 与端口（https -> wss），
-// App/小程序必须给完整地址。
+// WebSocket地址：H5同源自动继承协议；App/小程序必须完整地址。
 export const WS_URL = (() => {
   // #ifdef H5
   const proto = typeof location !== 'undefined' && location.protocol === 'https:' ? 'wss:' : 'ws:'

@@ -76,7 +76,6 @@ async def log_action(
         logger.warning("操作日志写入失败 action=%s", action, exc_info=True)
 
 
-# ---------------- 站点配置 ----------------
 
 SETTING_DEFAULTS = {
     # 基础
@@ -179,7 +178,6 @@ async def update_settings(db, changes: dict) -> dict:
     return await get_settings()
 
 
-# ---------------- 资料可见范围 ----------------
 async def is_maintenance() -> bool:
     return (await get_setting("maintenance")) == "1"
 
@@ -242,7 +240,6 @@ async def notify_user(db, user_id: int, title: str, content: str = "",
     ))
 
 
-# ---------------- 资料可见范围 ----------------
 
 DEFAULT_PRIVACY = {
     "gender": "public",
@@ -280,7 +277,6 @@ def can_view(level: str, viewer, is_self: bool) -> bool:
         return viewer is not None
     return False
 
-# ---------------- 用户个人偏好（主题 / 明暗模式 / 通知开关） ----------------
 DEFAULT_PREFERENCES = {
     "theme": "galaxy",       # 配色主题，取值见 VALID_THEMES
     "mode": "dark",          # 显示模式：dark 深色 / light 浅色 / auto 跟随系统

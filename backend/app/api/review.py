@@ -45,7 +45,6 @@ async def review_overview(
     })
 
 
-# ---------- 内容审查 ----------
 @router.get("/posts", response_model=Result[PageResponse[dict]])
 async def review_posts(
     page: int = Query(1, ge=1),
@@ -139,7 +138,6 @@ async def review_post_action(
     return Result(msg=msg)
 
 
-# ---------- 举报审查 ----------
 @router.get("/reports", response_model=Result[PageResponse[dict]])
 async def review_reports(
     page: int = Query(1, ge=1),

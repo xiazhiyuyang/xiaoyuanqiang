@@ -1,33 +1,14 @@
 # Campus Wall — Open Source Campus Community System
 
-> **Disclaimer**
->
-> This project is for learning and research purposes only. The creator shall not be liable for any direct or indirect losses caused by the use of this project, including but not limited to data loss, service interruption, security vulnerabilities, legal disputes, etc. Users shall evaluate risks at their own discretion and assume full responsibility. This project is provided "as is" without any warranty, express or implied.
-
----
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Core Features](#core-features)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Quick Start](#quick-start)
-- [Deployment](#deployment)
-- [Security](#security)
-- [Database](#database)
-- [Contributing](#contributing)
-- [License](#license)
+> **Disclaimer**: This project is for learning and research purposes only. The creator shall not be liable for any direct or indirect losses caused by the use of this project, including but not limited to data loss, service interruption, security vulnerabilities, legal disputes, etc. Users shall evaluate risks at their own discretion and assume full responsibility. This project is provided "as is" without any warranty, express or implied.
 
 ---
 
 ## Introduction
 
-Campus Wall is a full-featured, frontend-backend separated campus community system designed to provide an anonymous, secure, and active communication platform for campus users. The system supports complete community features including posting, commenting, liking, favoriting, following, private messaging, and notifications, with built-in advanced features such as AI content moderation, sensitive word filtering, device/IP banning, and a UID allocation system.
+Campus Wall is a frontend-backend separated campus community system that provides an anonymous, secure, and active communication platform for campus users. It supports complete community features including posting, commenting, liking, favoriting, following, private messaging, and notifications, with built-in advanced features such as AI content moderation, sensitive word filtering, device/IP banning, and a UID allocation system.
 
-The project adopts a modern technology stack. The backend is based on Python FastAPI + SQLAlchemy 2.0 (async), and the frontend includes a PC端 (Vue 3 + Vite), mobile H5端 (uni-app Vue 3), and admin dashboard (Vue 3 + Element Plus). All three frontends share the same backend API.
-
----
+The backend is based on Python FastAPI + SQLAlchemy 2.0 (async), and the frontend includes a PC端 (Vue 3 + Vite), mobile H5端 (uni-app Vue 3), and admin dashboard (Vue 3 + Element Plus). All three frontends share the same backend API.
 
 ## Core Features
 
@@ -52,7 +33,7 @@ The project adopts a modern technology stack. The backend is based on Python Fas
 | Email Registration | Email verification activation, anti-enumeration |
 | Password Recovery | Email reset link, security question recovery |
 | Third-party Login | Profile completion modal after WeChat login |
-| UID System | Normal segment from 01000, premium segment 00001-00999, permanently sealed after deletion |
+| UID System | Normal users from 01000; premium segment 00001-00999 requires admin grant; UID permanently sealed after deletion |
 | Account Deletion | 7-day cooldown period, revocable during the period |
 | Account Security | Security question, password change, login device management |
 
@@ -60,7 +41,7 @@ The project adopts a modern technology stack. The backend is based on Python Fas
 
 | Feature | Description |
 |---------|-------------|
-| AI Moderation | LLM text moderation + image moderation, multi-dimensional violation classification |
+| AI Moderation | LLM text moderation + image moderation, multi-dimensional violation classification, risk scoring for auto pass/mask/manual review |
 | Sensitive Words | Built-in 3500+ sensitive word library, customizable |
 | Violation Masking | Only masks violating content, does not affect normal content reading |
 | Manual Review | Review queue, batch processing, review records |
@@ -72,15 +53,13 @@ The project adopts a modern technology stack. The backend is based on Python Fas
 | Feature | Description |
 |---------|-------------|
 | Dashboard | User count, post count, comment count, activity trends |
-| User Management | User details, ban/unban, reset password, edit profile, grant premium UID |
+| User Management | User details (profile/device code/IP/login records), ban/unban, reset password, edit profile, grant premium UID |
 | Content Management | Post management, comment management, category management |
 | Moderation | AI review config, sensitive word management, report handling |
 | Operations | Announcement management, Banner management |
 | Settings | Site name, registration toggle, moderation config, etc. |
 | Audit Logs | Admin operation record auditing |
 | Ban Management | Account ban, device ban, IP ban, IP whitelist |
-
----
 
 ## Tech Stack
 
@@ -106,47 +85,28 @@ The project adopts a modern technology stack. The backend is based on Python Fas
 | Mobile H5 | uni-app (Vue 3) + Pinia |
 | Admin | Vue 3 + Element Plus + Pinia + Vue Router |
 
----
-
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                    Client Layer                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │    PC    │  │ Mobile H5│  │   Admin Dashboard│  │
-│  │ Vue3+Vite│  │ uni-app  │  │ Vue3+ElementPlus│  │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │
-│       │              │                   │            │
-│       └──────────────┼───────────────────┘            │
-│                      │ HTTP / WebSocket                │
-├──────────────────────┼────────────────────────────────┤
-│                Backend Layer (FastAPI)                 │
-│  ┌───────────────────┼───────────────────────────┐   │
-│  │              API Routes                         │   │
-│  │  auth │ posts │ comments │ messages │ admin... │   │
-│  └───────────────────┬───────────────────────────┘   │
-│                      │                                │
-│  ┌───────────────────┼───────────────────────────┐   │
-│  │             Core Services                       │   │
-│  │  security │ device_mgr │ ai_moderation │ ...  │   │
-│  └───────────────────┬───────────────────────────┘   │
-│                      │                                │
-│  ┌───────────────────┼───────────────────────────┐   │
-│  │             Models (ORM)                        │   │
-│  │  User │ Post │ Comment │ Message │ Device ...  │   │
-│  └───────────────────┬───────────────────────────┘   │
-│                      │                                │
-├──────────────────────┼────────────────────────────────┤
-│                Data Storage                            │
-│  ┌──────────────┐  ┌──────────────┐                 │
-│  │ SQLite/MySQL/│  │    Redis     │  (optional)     │
-│  │ PostgreSQL   │  │  (cache/rate)│                 │
-│  └──────────────┘  └──────────────┘                 │
-└─────────────────────────────────────────────────────┘
+Client (PC/H5/Admin)
+    │ HTTP/WebSocket
+    ▼
+API Routes (FastAPI Router)
+    │
+    ▼
+Dependency Injection (deps.py) — auth/permissions/rate limiting
+    │
+    ▼
+Core Services (core/) — business logic
+    │
+    ▼
+Data Models (models/) — SQLAlchemy ORM
+    │
+    ▼
+Database (SQLite/MySQL/PostgreSQL)
 ```
 
----
+For detailed directory structure, please refer to [PROJECT_STRUCTURE.en.md](./PROJECT_STRUCTURE.en.md).
 
 ## Quick Start
 
@@ -156,14 +116,7 @@ The project adopts a modern technology stack. The backend is based on Python Fas
 - Node.js 18+
 - npm or yarn
 
-### 1. Clone
-
-```bash
-git clone https://github.com/xiazhiyuyang/xiaoyuanqiang.git
-cd xiaoyuanqiang
-```
-
-### 2. Start Backend
+### Start Backend
 
 ```bash
 cd backend
@@ -176,28 +129,17 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 API docs: http://localhost:8000/docs
 
-### 3. Start PC
+### Start Frontend
 
 ```bash
-cd pc
-npm install
-npm run dev
-```
+# PC
+cd pc && npm install && npm run dev
 
-### 4. Start Mobile H5
+# Mobile H5
+cd mobile && npm install && npm run dev:h5
 
-```bash
-cd mobile
-npm install
-npm run dev:h5
-```
-
-### 5. Start Admin
-
-```bash
-cd admin
-npm install
-npm run dev
+# Admin
+cd admin && npm install && npm run dev
 ```
 
 ### Default Account
@@ -207,106 +149,55 @@ npm run dev
 
 > Please change the password immediately after first login.
 
----
+## Configuration
+
+Copy `backend/.env.example` to `.env`, key configuration items:
+
+| Config | Description | Default |
+|--------|-------------|---------|
+| `SECRET_KEY` | JWT signing key | auto-generated |
+| `DATABASE_URL` | Database connection | SQLite |
+| `ADMIN_USERNAME` | Initial admin username | admin |
+| `ADMIN_PASSWORD` | Initial admin password | auto-generated |
+| `SITE_URL` | Site URL (for email verification links) | http://localhost:8000 |
+| `SMTP_*` | Mail server configuration | empty (dev mode) |
+| `WECHAT_*` | WeChat Mini Program configuration | empty |
+
+> When SMTP is not configured, verification/reset links are returned directly in the API response (development mode) for easy testing.
 
 ## Deployment
 
-For detailed deployment, please refer to:
-- [DEPLOYMENT.en.md](./DEPLOYMENT.en.md) / Deployment Guide
+For detailed deployment guide, please refer to [DEPLOYMENT.en.md](./DEPLOYMENT.en.md), including environment requirements, backend deployment, frontend build, Nginx configuration, Docker deployment, Systemd service, database configuration, FAQ, etc.
 
-### Quick Docker Deployment
-
+Quick Docker deployment:
 ```bash
 docker-compose up -d
 ```
 
-### Manual Deployment
+## Database
 
-1. Build frontends:
-```bash
-cd pc && npm install && npm run build
-cd ../mobile && npm install && npm run build:h5
-cd ../admin && npm install && npm run build
-```
+`data/campus_wall.db` is a sanitized sample database containing 6 post categories, 3 announcements, 4 banners, 3500+ sensitive words, 24 site settings, 1 admin account (admin/admin123456), and 20 sample users (no password).
 
-2. Configure Nginx: map `/` to PC dist, `/h5` to mobile dist, `/admin` to admin dist, `/api` reverse proxy to backend.
-
-3. Start backend service (recommend systemd or supervisor).
-
----
+All user personal information, password hashes, device codes, IP addresses, private messages, etc. have been cleaned. For a fresh database, delete this file and start the backend to automatically create an empty database.
 
 ## Security
 
-### Implemented Security Measures
+- Password bcrypt hashing (cost=12), JWT token version control
+- Login rate limiting: auto-ban IP after 10 consecutive failures within 10 minutes
+- Device banning: auto-collect device codes, support device-level ban
+- IP banning: support IP-level ban and IP whitelist
+- Email security: login after verification, anti-enumeration for password recovery
+- Input security: Pydantic validation, ORM parameterized queries, CORS configuration, file upload type/size limits
 
-- ✅ No hardcoded secrets or passwords
-- ✅ SQL injection protection (ORM parameterized queries)
-- ✅ XSS protection (frontend output escaping)
-- ✅ Password bcrypt hashing (cost=12)
-- ✅ JWT token version control
-- ✅ Login rate limiting and auto-banning
-- ✅ Device/IP banning system
-- ✅ Email verification anti-enumeration
-- ✅ Input validation (Pydantic)
-- ✅ CORS configuration
-- ✅ File upload type/size limits
-
-### Device Banning System
-
-- Auto-collect device codes (different prefixes for mobile/PC/admin)
-- Support device-level banning, banned devices cannot register/login
-- Reference FingerprintJS browser fingerprinting technology
-
-### IP Banning System
-
-- Support IP-level banning
-- IP whitelist mechanism
-- Reference fail2ban auto-banning strategy
-- Auto-ban IP after 10 consecutive failed logins within 10 minutes
-
-> **Note**: This project may still have undiscovered security vulnerabilities. Users should conduct their own security audit and assume corresponding risks.
-
----
-
-## Database
-
-`data/campus_wall.db` is a sanitized sample database:
-
-| Data | Count |
-|------|-------|
-| Categories | 6 |
-| Announcements | 3 |
-| Banners | 4 |
-| Sensitive Words | 3500+ |
-| Site Settings | 24 |
-| Admin Account | 1 (admin/admin123456) |
-| Sample Users | 20 (no password) |
-
-All user personal information, password hashes, device codes, IP addresses, private messages, etc. have been cleaned.
-
-For a fresh database, delete this file and start the backend to automatically create an empty database.
-
----
+> This project may still have undiscovered security vulnerabilities. Users should conduct their own security audit and assume corresponding risks.
 
 ## Contributing
 
 Issues and Pull Requests are welcome.
 
-### Contribution Guidelines
-
-1. Fork this repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
----
-
 ## License
 
 MIT License
-
-Copyright (c) 2026 Campus Wall
 
 ---
 

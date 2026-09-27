@@ -81,7 +81,6 @@ class ReviewOutcome:
         }
 
 
-# ---------------- 配置读写 ----------------
 async def get_config(force: bool = False) -> AIConfig:
     global _config_cache
     now = time.time()
@@ -111,7 +110,6 @@ async def save_config(db: AsyncSession, payload: dict) -> AIConfig:
     return updated
 
 
-# ---------------- 大模型触发判定 ----------------
 def should_call_llm(cfg: AIConfig, feature_score: int, has_hit: bool) -> bool:
     if not cfg.llm_api_key or not cfg.llm_base_url or not cfg.llm_model:
         return False
@@ -126,7 +124,6 @@ def should_call_llm(cfg: AIConfig, feature_score: int, has_hit: bool) -> bool:
     return has_hit or feature_score >= cfg.llm_min_score
 
 
-# ---------------- 主流程 ----------------
 async def evaluate(
     db: AsyncSession,
     *,
@@ -294,7 +291,6 @@ async def attach_target(db: AsyncSession, record_id: int, target_id: int) -> Non
         record.target_id = target_id
 
 
-# ---------------- 用户风险画像 ----------------
 async def user_violation_stats(db: AsyncSession, user_id: int, days: int = 7) -> dict:
     """近 N 天的违规统计，供自动封禁与后台展示。"""
     from datetime import datetime, timedelta, timezone

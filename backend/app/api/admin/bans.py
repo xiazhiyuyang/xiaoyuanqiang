@@ -23,7 +23,6 @@ def _parse_expires_days(days: float | None) -> str | None:
     return (datetime.now(timezone.utc) + timedelta(days=float(days))).isoformat(timespec="seconds")
 
 
-# ==================== IP 封禁 ====================
 
 @router.get("/bans/ips", response_model=Result[PageResponse[dict]])
 async def list_ip_bans(
@@ -70,7 +69,6 @@ async def ban_ip(
     if not ip:
         raise HTTPException(status_code=400, detail="IP地址不能为空")
 
-    # 检查是否已存在
     existing = (await db.execute(select(IPBan).where(IPBan.ip == ip))).scalar_one_or_none()
     expires_at = _parse_expires_days(days if isinstance(days, int) else 0)
     if existing:
@@ -118,7 +116,6 @@ async def unban_ip(
     return Result(data={"message": "IP已解封"})
 
 
-# ==================== 设备封禁 ====================
 
 @router.get("/bans/devices", response_model=Result[PageResponse[dict]])
 async def list_device_bans(
@@ -218,7 +215,6 @@ async def unban_device(
     return Result(data={"message": "设备已解封"})
 
 
-# ==================== 用户设备查看 ====================
 
 @router.get("/users/{user_id}/devices", response_model=Result[list[dict]])
 async def list_user_devices(
@@ -242,7 +238,6 @@ async def list_user_devices(
     return Result(data=items)
 
 
-# ==================== IP 白名单 ====================
 
 @router.get("/bans/whitelist", response_model=Result[list[dict]])
 async def list_whitelist(
@@ -306,7 +301,6 @@ async def remove_whitelist(
     return Result(data={"message": "已移除白名单"})
 
 
-# ==================== 自动封禁统计与规则 ====================
 
 @router.get("/bans/auto-stats", response_model=Result[dict])
 async def auto_ban_stats(
@@ -339,7 +333,6 @@ async def auto_ban_stats(
     })
 
 
-# ==================== 按指纹哈希封禁设备 ====================
 
 @router.post("/bans/fingerprint", response_model=Result[dict])
 async def ban_fingerprint(

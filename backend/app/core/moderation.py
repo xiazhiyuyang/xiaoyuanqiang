@@ -25,9 +25,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.sensitive_word import SensitiveWord
 
-# ---------------------------------------------------------------------------
 # 分类体系（6 类）
-# ---------------------------------------------------------------------------
 CATEGORY_CATALOG = [
     {"key": "politics", "label": "政治敏感", "hint": "涉及政治人物、事件、敏感话题", "legal": True, "severity": 5},
     {"key": "porn", "label": "色情低俗", "hint": "色情、低俗、性暗示内容", "legal": True, "severity": 4},
@@ -52,9 +50,7 @@ ACTION_LABELS = {
     "pass": "通过", "mask": "打码", "review": "待复核", "block": "拦截",
 }
 
-# ---------------------------------------------------------------------------
 # 内置规则
-# ---------------------------------------------------------------------------
 BUILTIN_RULES = [
     {"name": "url_link", "category": "ad", "severity": 3, "weight": 15, "action": "review",
      "pattern": r"https?://[^\s]+|[\w-]+\.(com|cn|net|org|io|cc|top|xyz)[^\s]*",
@@ -73,9 +69,7 @@ BUILTIN_RULES = [
 
 _COMPILED_RULES = [(r, re.compile(r["pattern"], re.IGNORECASE)) for r in BUILTIN_RULES]
 
-# ---------------------------------------------------------------------------
 # 归一化（保留原逻辑）
-# ---------------------------------------------------------------------------
 _IGNORE_CHARS = set(
     " \t\r\n.,!?;:~·-—_/\\|@#$%^&*()[]{}<>\"'`。，！？；：～…、“”‘’（）【】《》✦✨⭐♥♡"
 )
@@ -248,9 +242,7 @@ async def _get_config(db: AsyncSession) -> dict:
         return _config_cache
 
 
-# ---------------------------------------------------------------------------
 # 结果对象
-# ---------------------------------------------------------------------------
 @dataclass
 class ReviewResult:
     requested_action: str = "pass"       # pass/mask/review/block
@@ -276,9 +268,7 @@ class ModerationResult:
     blocked_words: list = field(default_factory=list)
 
 
-# ---------------------------------------------------------------------------
 # 阶段3：规则扫描
-# ---------------------------------------------------------------------------
 def _scan_rules(text: str) -> list[dict]:
     out = []
     for rule, rx in _COMPILED_RULES:
@@ -376,9 +366,7 @@ async def _call_llm(cfg: dict, text: str, target_type: str) -> dict | None:
     return None
 
 
-# ---------------------------------------------------------------------------
 # 主入口
-# ---------------------------------------------------------------------------
 async def moderate_content(
     db: AsyncSession,
     text: str,
@@ -396,7 +384,6 @@ async def moderate_content(
 
     category_actions = cfg.get("category_actions") or {}
 
-    # ---- 阶段4 打分 ----
     score = 0
     reasons: list[str] = []
     cats: list[str] = []
@@ -433,7 +420,6 @@ async def moderate_content(
     score = max(0, min(100, int(round(score))))
     risk_level = _risk_level(score)
 
-    # ---- 阶段5 决策 ----
     has_block_kw = bool(blocked_words)
     requested = "pass"
     for cat in cats:
@@ -452,10 +438,8 @@ async def moderate_content(
         else:
             requested = "pass"
 
-    # ---- 阶段6 打码 ----
     masked_text = _mask(text, keyword_hits, rule_hits)
 
-    # ---- 阶段7 LLM ----
     llm_result = None
     if _should_llm(cfg, score, user_id):
         llm_result = await _call_llm(cfg, text, target_type)
@@ -512,9 +496,7 @@ async def moderate_text(db: AsyncSession, text: str) -> ModerationResult:
     )
 
 
-# ---------------------------------------------------------------------------
 # 集成辅助：判断 AI 审核是否对该目标启用
-# ---------------------------------------------------------------------------
 async def get_review_config(db: AsyncSession) -> dict:
     """公开读取进程内缓存的审核配置字典。"""
     return await _get_config(db)
@@ -617,9 +599,7 @@ async def record_review(
     return rec
 
 
-# ---------------------------------------------------------------------------
 # 内置词库（用于 /lexicon/import）
-# ---------------------------------------------------------------------------
 BUILTIN_LEXICON = {
     "politics": ["反动", "颠覆国家", "分裂国家"],
     "porn": ["约炮", "裸聊", "一夜情", "色情", "av女优", "黄色网站"],

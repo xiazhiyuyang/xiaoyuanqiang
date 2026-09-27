@@ -90,7 +90,6 @@ async def set_site_settings(
     return Result(data=_settings_form(result), msg="设置已保存")
 
 
-# ---------- App 更新配置（后台直接发整包 APK 冷更新） ----------
 @router.get("/app-update", response_model=Result[dict])
 async def admin_get_app_update(
     admin: User = Depends(get_admin_user),

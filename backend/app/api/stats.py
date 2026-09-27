@@ -62,7 +62,6 @@ async def insights(
         for k in date_keys
     ]
 
-    # ---- 等级分布（含未覆盖等级补零，名称/色值来自等级表）----
     lv_rows = await db.execute(
         select(User.level, func.count()).group_by(User.level)
     )
@@ -77,7 +76,6 @@ async def insights(
         for lv, name, _need, color in LEVEL_LADDER
     ]
 
-    # ---- 活跃用户：今日 / 近 7 日（按最近登录日期字符串）----
     today_str = datetime.now(timezone.utc).date().isoformat()
     week_start = (datetime.now(timezone.utc).date() - timedelta(days=6)).isoformat()
     active_today = (await db.execute(
@@ -87,7 +85,6 @@ async def insights(
         select(func.count()).select_from(User).where(User.last_login_date >= week_start)
     )).scalar() or 0
 
-    # ---- 头部创作者（近 30 天发布量 + 累计获赞）----
     top_rows = await db.execute(
         select(
             Post.user_id,
@@ -111,7 +108,6 @@ async def insights(
             "likes": int(r[2] or 0),
         })
 
-    # ---- 互动效率（已发布帖均值）----
     agg = await db.execute(
         select(
             func.count(Post.id),

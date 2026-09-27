@@ -17,7 +17,6 @@ def _user(role: str = "user", permissions: str = "") -> User:
     return u
 
 
-# ---------------- permission_list 解析 ----------------
 
 @pytest.mark.parametrize("raw,expected", [
     ("", []),
@@ -32,7 +31,6 @@ def test_permission_list_parsing(raw, expected):
     assert _user(permissions=raw).permission_list == expected
 
 
-# ---------------- has_permission 矩阵 ----------------
 
 def test_admin_has_every_permission_including_unregistered_keys():
     admin = _user(role="admin", permissions="")
@@ -70,7 +68,6 @@ def test_banned_flag_is_independent_of_permissions():
     assert u.is_banned is True
 
 
-# ---------------- staff_tags_of 身份标签 ----------------
 
 def test_admin_tag_only_shows_admin():
     admin = _user(role="admin", permissions="content_review,report_review")

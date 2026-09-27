@@ -12,7 +12,6 @@ from app.schemas.common import Result, PageResponse
 router = APIRouter(prefix="/api/tools", tags=["tools"])
 
 
-# ---------- 公开 API ----------
 
 @router.get("/categories", response_model=Result[list])
 async def list_categories(db: AsyncSession = Depends(get_db)):
@@ -98,7 +97,6 @@ async def record_tool_view(slug: str, db: AsyncSession = Depends(get_db)):
     return Result(msg="ok")
 
 
-# ---------- 管理员 API ----------
 
 admin_router = APIRouter(prefix="/api/admin/tools", tags=["admin-tools"])
 

@@ -72,7 +72,6 @@ class AIConfig:
     dry_run: bool = False                 # 观察模式：只记录不处置，用于上线前试跑
     local_enabled: bool = True            # 词库 + 规则 + 特征打分
 
-    # ---- 大模型语义审查 ----
     llm_trigger: str = "suspect"          # off / suspect / sampled / always
     llm_provider: str = "zhipu"
     llm_base_url: str = "https://open.bigmodel.cn/api/paas/v4"
@@ -85,7 +84,6 @@ class AIConfig:
     llm_cache_ttl: int = 3600             # 相同内容结果缓存秒数
     llm_daily_limit: int = 2000           # 每日调用上限，防费用失控
 
-    # ---- 图片审查 ----
     image_enabled: bool = False
     image_provider: str = "none"          # none / sightengine / generic / local
     image_api_url: str = ""
@@ -96,24 +94,20 @@ class AIConfig:
     image_block_score: int = 85
     image_review_score: int = 60
 
-    # ---- 处置门槛 ----
     block_score: int = 75                 # >= 该分 -> 拦截
     review_score: int = 40                # >= 该分 -> 人工复核
     mask_score: int = 20                  # >= 该分 -> 打码
     category_actions: dict = field(default_factory=lambda: dict(DEFAULT_CATEGORY_ACTIONS))
 
-    # ---- 审查范围 ----
     scope_post: bool = True
     scope_comment: bool = True
     scope_message: bool = True
     scope_profile: bool = True
 
-    # ---- 用户处置 ----
     auto_ban_threshold: int = 0           # 7 天内被拦截次数达到该值自动封禁；0=关闭
     notify_author: bool = True            # 审查结果通知作者
     exempt_staff: bool = True             # 管理员/审查员豁免自动拦截（仅记录）
 
-    # ---- 词库 ----
     lexicon_whitelist: list = field(default_factory=list)  # 白名单词
     blocked_domains: list = field(default_factory=list)    # 站外域名黑名单
 

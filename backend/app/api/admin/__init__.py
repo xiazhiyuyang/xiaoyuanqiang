@@ -35,10 +35,6 @@ router.include_router(logs.router)
 router.include_router(settings.router)
 router.include_router(bans.router)
 
-# 备注：
-# - /api/admin/tools 下的工具管理接口仍位于 app/api/tools.py 的 admin_router，
-#   由 main.py 单独 include（保持原路径不变）。
-# - /api/ai-review 下的 AI 审查接口仍位于 app/api/ai_review.py，由 main.py 单独 include。
-# - app/api/admin/_utils.py 提供确认 token 与 _purge_user 等公共函数。
+# 工具管理接口在 tools.py 的 admin_router，AI审查接口在 ai_review.py，均由 main.py 单独 include。
 
 __all__ = ["router"]

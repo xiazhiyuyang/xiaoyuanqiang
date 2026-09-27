@@ -169,7 +169,6 @@ const loadData = async () => {
   }
 }
 
-// ---------- 广告 ----------
 const bannerDialog = ref(false)
 const bannerForm = ref({ id: null, title: '', theme: 'blue', image_url: '', link_url: '', sort_order: 0, is_active: true })
 const openBannerDialog = (row) => {
@@ -213,7 +212,6 @@ const removeBanner = async (row) => {
   loadData()
 }
 
-// ---------- 公告 ----------
 const annDialog = ref(false)
 const annForm = ref({ id: null, content: '', link_url: '', sort_order: 0, is_active: true })
 const openAnnDialog = (row) => {

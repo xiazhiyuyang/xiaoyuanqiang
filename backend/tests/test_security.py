@@ -28,7 +28,6 @@ class _FakeUser:
         self.password_hash = password_hash
 
 
-# ---------------- 匿名昵称 ----------------
 
 def test_anonymous_alias_stable_within_same_post():
     """同一用户在同一帖下的匿名编号必须稳定，否则刷新页面就换身份。"""
@@ -61,7 +60,6 @@ def test_anonymous_alias_format_is_four_digits():
     assert len(suffix) == 4 and suffix.isdigit()
 
 
-# ---------------- 媒体 URL 白名单 ----------------
 
 @pytest.mark.parametrize("url", [
     "/uploads/202608/01cfae78ecde4aa99a37bf6484ae3556.png",
@@ -94,7 +92,6 @@ def test_is_own_media_url_accepts_real_release_filenames():
     assert is_own_media_url("/uploads/202608/01cfae78ecde4aa99a37bf6484ae3556.png") is True
 
 
-# ---------------- 跳转链接白名单 ----------------
 
 @pytest.mark.parametrize("url", [
     "/pages/post/detail?id=1",
@@ -119,7 +116,6 @@ def test_is_safe_link_rejects(url):
     assert is_safe_link(url) is False
 
 
-# ---------------- 会话版本号 ----------------
 
 def test_token_version_changes_when_password_changes():
     """改密后 token_version 必须变化，deps 层据此让所有旧 token 立即失效。"""
@@ -145,7 +141,6 @@ def test_token_version_does_not_leak_hash():
     assert version not in raw_hash
 
 
-# ---------------- JWT 签发与校验 ----------------
 
 def test_jwt_roundtrip():
     token = create_access_token({"sub": "42", "pv": "abcd1234abcd1234"})

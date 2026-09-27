@@ -10,7 +10,6 @@ from app.models.comment import Comment
 from app.models.report import Report
 from app.models.user import User
 
-# ---------- 敏感操作二次确认 token（内存态、一次性、5 分钟有效）----------
 _confirm_tokens: dict[str, dict] = {}
 _CONFIRM_TTL = 300
 

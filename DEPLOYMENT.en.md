@@ -14,6 +14,7 @@ This document provides detailed instructions for deploying the Campus Wall proje
 - [Database](#database)
 - [Configuration](#configuration)
 - [FAQ](#faq)
+- [Update Deployment](#update-deployment)
 
 ---
 

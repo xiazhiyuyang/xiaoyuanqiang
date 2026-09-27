@@ -26,7 +26,6 @@ class AIReviewRecord(Base):
     review_source = Column(String(20), default="keyword")  # keyword/rule/llm/image
     meta = Column(JSON, default=dict)  # 额外信息
 
-    # ---- 扩展字段 ----
     requested_action = Column(String(20), default="pass")  # AI 建议动作 pass/mask/review/block
     latency_ms = Column(Integer, default=0)  # 审核耗时
     evidence = Column(JSON, default=dict)  # 完整证据链
@@ -63,7 +62,6 @@ class AIReviewConfig(Base):
     llm_presets = Column(JSON, default=dict)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    # ---- 扩展字段 ----
     dry_run = Column(Boolean, default=False)
     local_enabled = Column(Boolean, default=True)
     scope_post = Column(Boolean, default=True)

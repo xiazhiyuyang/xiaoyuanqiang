@@ -33,7 +33,6 @@ def mgr():
     return ConnectionManager()
 
 
-# ---------------- 计数 ----------------
 
 def test_empty_manager_reports_zero(mgr):
     assert mgr.online_users == 0
@@ -97,7 +96,6 @@ def test_multiple_users_counted_separately(mgr):
     assert mgr.total_connections == 2
 
 
-# ---------------- 坏连接摘除 ----------------
 
 def test_drop_removes_socket_from_all_users(mgr):
     shared = FakeWS("shared")
